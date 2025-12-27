@@ -24,4 +24,9 @@ class RegistrationPeriod extends Model
     'end_date' => 'datetime',
     'is_active' => 'boolean',
   ];
+
+  public function users()
+  {
+    return $this->hasMany(User::class, 'registration_period_id');
+  }
 }

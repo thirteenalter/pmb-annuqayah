@@ -2,24 +2,50 @@
   <div class="max-w-7xl mx-auto lg:px-0 px-4">
     <div class="flex items-center gap-3 py-4 overflow-x-auto no-scrollbar outline-none">
 
-       <a href="{{ route('admin.dashboard.pendaftar') }}"
-        class="flex items-center gap-2 text-slate-600 font-semibold hover:text-slate-900 transition px-5 py-2 border border-slate-300 bg-slate-300/30 hover:bg-slate-300/50 rounded-xl">
+      <a href="{{ route('admin.dashboard.pendaftar') }}"
+        class="flex-none flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-200 
+        {{ request()->routeIs('admin.dashboard.pendaftar') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
         <span class="material-symbols-outlined" style="font-size: medium;">
           patient_list
         </span>
-        List Pendaftar</a>
-      <a href="{{ route('admin.dashboard.pendaftar') }}"
-        class="flex items-center gap-2 text-slate-600 font-semibold hover:text-slate-900 transition px-5 py-2 border border-slate-300 bg-slate-300/30 hover:bg-slate-300/50 rounded-xl">
+        <span class="font-semibold text-sm">List Pendaftar</span>
+      </a>
+
+      <a href="#"
+        class="flex-none flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-200 
+        {{ request()->routeIs('admin.admisi.*') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
         <span class="material-symbols-outlined" style="font-size: medium;">
           other_admission
         </span>
-        Admisi</a>
+        <span class="font-semibold text-sm">Admisi</span>
+      </a>
+
       <a href="{{ route('admin.pembayaran') }}"
-        class="flex items-center gap-2 text-slate-600 font-semibold hover:text-slate-900 transition px-5 py-2 border border-slate-300 bg-slate-300/30 hover:bg-slate-300/50 rounded-xl">
+        class="flex-none flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-200 
+        {{ request()->routeIs('admin.pembayaran') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
         <span class="material-symbols-outlined" style="font-size: medium;">
           payment
         </span>
-        Pembayaran</a>
+        <span class="font-semibold text-sm">Pembayaran</span>
+      </a>
+
+      <a href="#"
+        class="flex-none flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-200 
+        {{ request()->routeIs('admin.gelombang.*') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
+        <span class="material-symbols-outlined" style="font-size: medium;">
+          waves
+        </span>
+        <span class="font-semibold text-sm">Gelombang</span>
+      </a>
+
+      <a href="#"
+        class="flex-none flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-200 
+        {{ request()->routeIs('admin.cbt.*') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
+        <span class="material-symbols-outlined" style="font-size: medium;">
+          history_edu
+        </span>
+        <span class="font-semibold text-sm">Computer Based Test</span>
+      </a>
 
     </div>
   </div>

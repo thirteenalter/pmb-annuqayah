@@ -20,22 +20,21 @@
     <div class="flex justify-center mb-8">
       <div class="p-6 bg-red-100 rounded-full text-red-600 shadow-sm flex items-center justify-center">
         <span class="material-symbols-outlined">
-          block
+          search_off
         </span>
       </div>
     </div>
-a
     <h1
       class="text-9xl font-extrabold text-slate-200/40 absolute inset-0 flex items-center justify-center -z-10 select-none">
-      403
+      404
     </h1>
 
     <div class="relative z-10">
       <h2 class="text-4xl font-bold text-slate-800 tracking-tight mb-4">
-        Akses Terbatas
+        Halaman Tidak Ditemukan
       </h2>
       <p class="text-slate-600 text-lg mb-8 leading-relaxed">
-        Maaf, kamu tidak memiliki izin untuk mengakses halaman ini. <br class="hidden md:block">
+        Maaf, halaman yang kamu cari tidak ditemukan. <br class="hidden md:block">
         Silakan hubungi admin jika menurutmu ini adalah sebuah kesalahan.
       </p>
 
@@ -52,7 +51,7 @@ a
     </div>
 
     <footer class="mt-16 text-slate-400 text-sm italic">
-      "Sabar ya, akses halaman ini butuh privilege khusus."
+      "Maaf ya, halaman ini tidak ditemukan."
     </footer>
   </div>
 </body>

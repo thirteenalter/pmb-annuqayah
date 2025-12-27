@@ -26,6 +26,7 @@ class User extends Authenticatable
     'role',
     'password',
     'status',
+    'registration_period_id',
   ];
 
   /**
@@ -79,5 +80,10 @@ class User extends Authenticatable
   public function validity(): HasOne
   {
     return $this->hasOne(Validity::class, 'user_id');
+  }
+
+  public function registrationPeriod()
+  {
+    return $this->belongsTo(RegistrationPeriod::class, 'registration_period_id');
   }
 }

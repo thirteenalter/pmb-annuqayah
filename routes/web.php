@@ -4,8 +4,10 @@ use App\Http\Controllers\DashboardPayment;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\UserDashboard;
 use Illuminate\Support\Facades\Auth;
 use App\Models\RegistrationPeriod;
+
 
 Route::get('/', function () {
   return view('welcome');
@@ -30,15 +32,17 @@ Route::get('/cek-verifikasi', function () {
 
 Route::get('/cek-pembayaran', function () {
   /** @var \App\Models\User $user */
-
-
   $user = Auth::user();
+
   if ($user) {
-    $user->load('payment');
+    // Load payment dan validity sekaligus
+    $user->load(['payment', 'validity']);
   }
+
   return view('payments.index', [
     'user' => $user,
-    'payment' => $user->payment
+    'payment' => $user?->payment,
+    'validity' => $user?->validity // Tambahkan ini agar bisa diakses di view
   ]);
 })->middleware(['auth', 'verified'])->name('pembayaran.status');
 
@@ -111,12 +115,16 @@ Route::middleware(['auth', 'verified', 'admin'])
       return view('admin.dashboard.index');
     })->name('dashboard');
 
-    Route::get('/dashboard/list-pendaftar', function () {
-      return view('admin.dashboard.pendaftar.index');
-    })->name('dashboard.pendaftar');
+    Route::get('/dashboard/list-pendaftar', [UserDashboard::class, 'pendaftar'])->name('dashboard.pendaftar');
 
-    Route::patch('/pembayaran/{id}', [DashboardPayment::class, 'updateStatus'])->name('admin.pembayaran.update');
+    Route::patch('/pembayaran/{id}', [DashboardPayment::class, 'updateStatus'])->name('pembayaran.update');
 
+    Route::get('/dashboard/list-pendaftar/pendaftar/{id}', [UserDashboard::class, 'show'])->name('dashboard.pendaftar.show');
+
+    Route::post('/pendaftar/list-pendaftar/pendaftar/{id}/validate', [UserDashboard::class, 'validateData'])
+      ->name('pendaftar.validate');
+    Route::post('/pendaftar/list-pendaftar/pendaftar/{id}/cancel', [UserDashboard::class, 'cancelValidation'])
+      ->name('pendaftar.cancel');
     Route::get('/dashboard/pembayaran', [DashboardPayment::class, 'index'])->name('pembayaran');
   });
 

@@ -11,9 +11,11 @@ class DashboardPayment extends Controller
   public function index(Request $request)
   {
     $search = $request->input('search');
+    $waveFilter = $request->input('wave_id');
+
+    $waves = RegistrationPeriod::orderBy('start_date', 'desc')->get();
     $activeWave = RegistrationPeriod::where('is_active', true)->first();
 
-    // Pastikan pakai PAGINATE, bukan GET
     $allPayments = Payment::with(['user.validity'])
       ->when($search, function ($query) use ($search) {
         $query->whereHas('user', function ($q) use ($search) {
@@ -21,11 +23,17 @@ class DashboardPayment extends Controller
             ->orWhere('email', 'like', "%{$search}%");
         })->orWhere('account_name', 'like', "%{$search}%");
       })
+      // SEKARANG INI AKAN JALAN karena kolomnya sudah ada di tabel users
+      ->when($waveFilter, function ($query) use ($waveFilter) {
+        $query->whereHas('user', function ($q) use ($waveFilter) {
+          $q->where('registration_period_id', $waveFilter);
+        });
+      })
       ->latest()
-      ->paginate(10) // Ini yang membuat ->links() bisa bekerja
+      ->paginate(10)
       ->withQueryString();
 
-    return view('admin.pembayaran.index', compact('activeWave', 'allPayments'));
+    return view('admin.pembayaran.index', compact('activeWave', 'allPayments', 'waves'));
   }
 
   public function updateStatus(Request $request, $id)

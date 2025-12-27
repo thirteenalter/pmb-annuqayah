@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\RegistrationPeriod;
 
 class FormController extends Controller
 {
@@ -91,14 +92,32 @@ class FormController extends Controller
       'account_name' => 'required|string|max:255',
       'proof_file'   => 'required|image|max:2048',
     ]);
+
     /** @var \App\Models\User $user */
     $user = Auth::user();
+    $activeWave = RegistrationPeriod::where('is_active', true)->first();
 
-    $user->payment()->updateOrCreate(['user_id' => $user->id], [
-      'account_name' => $request->account_name,
-      'proof_file'   => $request->file('proof_file')->store('payments', 'public'),
-      'status'       => 'pending',
-    ]);
+    if (!$activeWave) {
+      return back()->with('error', 'Maaf, tidak ada gelombang aktif.');
+    }
+
+    // Gunakan Transaction agar data aman
+    DB::transaction(function () use ($request, $user, $activeWave) {
+      // 1. Simpan Payment
+      $user->payment()->updateOrCreate(
+        ['user_id' => $user->id],
+        [
+          'account_name' => $request->account_name,
+          'proof_file'   => $request->file('proof_file')->store('payments', 'public'),
+          'status'       => 'pending',
+        ]
+      );
+
+      // 2. Update Gelombang di User
+      $user->update([
+        'registration_period_id' => $activeWave->id
+      ]);
+    });
 
     return redirect()->route('formulir')->with('success', 'Konfirmasi pembayaran berhasil dikirim!');
   }
