@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Admin\ExamQuestionController;
 use App\Http\Controllers\DashboardPayment;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -101,6 +103,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
   })->name('isi-formulir');
 
 
+  Route::get('/exams', [App\Http\Controllers\Student\ExamController::class, 'index'])->name('exams.index');
+
+  // Masuk ke ruang ujian (Ngerjain soal)
+  Route::get('/exams/{exam}', [App\Http\Controllers\Student\ExamController::class, 'show'])->name('exams.show');
+
+  // Tombol buat kirim semua jawaban
+  Route::post('/exams/{exam}/submit', [App\Http\Controllers\Student\ExamController::class, 'store'])->name('exams.store');
+
 
   Route::post('/formulir/isi-form', [FormController::class, 'storeIdentity'])->name('form.store');
   Route::post('/formulir/isi-form/upload-dokumen', [FormController::class, 'storeDocuments'])->name('dokumen.store');
@@ -126,6 +136,23 @@ Route::middleware(['auth', 'verified', 'admin'])
     Route::post('/pendaftar/list-pendaftar/pendaftar/{id}/cancel', [UserDashboard::class, 'cancelValidation'])
       ->name('pendaftar.cancel');
     Route::get('/dashboard/pembayaran', [DashboardPayment::class, 'index'])->name('pembayaran');
+
+    Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
+
+
+    Route::get('/exams', [ExamController::class, 'index'])->name('exams.index');
+    Route::get('/exams/create', [ExamController::class, 'create'])->name('exams.create');
+    Route::post('/exams', [ExamController::class, 'store'])->name('exams.store');
+
+    Route::get('/exams/monitoring', [ExamController::class, 'monitoring'])->name('exams.monitoring');
+
+    Route::get('/exams/{exam}', [ExamController::class, 'show'])->name('exams.show');
+
+    Route::get('/exams/{exam}/questions/create', [ExamQuestionController::class, 'create'])->name('exams.questions.create');
+    Route::post('/exams/{exam}/questions', [ExamQuestionController::class, 'store'])->name('exams.questions.store');
+    Route::get('/exams/{exam}/questions/{question}/edit', [ExamQuestionController::class, 'edit'])->name('exams.questions.edit');
+    Route::put('/exams/{exam}/questions/{question}', [ExamQuestionController::class, 'update'])->name('exams.questions.update');
+    Route::delete('/exams/{exam}/questions/{question}', [ExamQuestionController::class, 'destroy'])->name('exams.questions.destroy');
   });
 
 Route::middleware('auth')->group(function () {

@@ -37,7 +37,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Menunggu Verifikasi</p>
-                        <h3 class="text-2xl font-black text-slate-900">{{ $users->where('status', 'pending')->count() }}
+                        <h3 class="text-2xl font-black text-slate-900">{{ $users->where('status', 'invalid')->count() }}
                         </h3>
                     </div>
                 </div>

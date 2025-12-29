@@ -8,7 +8,7 @@ return new class extends Migration {
   public function up()
   {
     Schema::table('users', function (Blueprint $table) {
-      $table->string('status')->default('pending');
+      $table->string('status')->default('invalid');
     });
   }
   public function down()
