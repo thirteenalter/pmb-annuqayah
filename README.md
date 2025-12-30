@@ -1,76 +1,123 @@
+<img src="https://pmb.ua.ac.id/wp-content/uploads/2025/01/cropped-1.-Logo-Alternatif-Universitas-Annuqayah.png" alt="img" />
 
-# PMB Annuqayah
+# PMB Universitas Annuqayah - Sistem Informasi Penerimaan Mahasiswa Baru
 
-## Sistem Informasi Penerimaan Mahasiswa Baru Universitas Annuqayah
+Sistem Informasi **Penerimaan Mahasiswa Baru (PMB)** Universitas Annuqayah adalah platform berbasis web yang dirancang untuk mendigitalisasi dan mempermudah proses pendaftaran calon mahasiswa. Dibangun menggunakan **Laravel 11** dan **Laravel Breeze**, sistem ini menawarkan antarmuka modern, responsif, dan keamanan yang terjamin.
 
-Wujudkan mimpi akademik Anda melalui proses pendaftaran yang mudah, cepat, dan transparan.
+## 🚀 Fitur Utama
 
----
-
-## 📋 Daftar Isi
-- [Tentang](#tentang)
-- [Fitur Utama](#fitur-utama)
-- [Instalasi](#instalasi)
-- [Penggunaan](#penggunaan)
-- [Persyaratan](#persyaratan)
-- [Kontribusi](#kontribusi)
-- [Lisensi](#lisensi)
+* **Autentikasi Modern:** Menggunakan Laravel Breeze untuk sistem login, registrasi, dan verifikasi email yang aman.
+* **Dashboard Calon Mahasiswa:** Panel khusus bagi pendaftar untuk memantau status seleksi dan melengkapi berkas.
+* **Formulir Pendaftaran Dinamis:** Pengisian data pribadi, riwayat pendidikan, dan pemilihan program studi.
+* **Upload Berkas:** Fitur unggah dokumen persyaratan (Ijazah, KK, Foto, dll) secara digital.
+* **Panel Admin (Opsional/TBA):** Manajemen data pendaftar, verifikasi berkas, dan laporan statistik.
+* **Responsive Design:** Tampilan optimal di berbagai perangkat (Mobile, Tablet, Desktop) menggunakan Tailwind CSS.
 
 ---
 
-## Tentang
+## 🛠️ Teknologi yang Digunakan
 
-**PMB Annuqayah** adalah sistem informasi modern yang dirancang untuk mempermudah proses penerimaan mahasiswa baru di Universitas Annuqayah. Platform ini memberikan pengalaman pendaftaran yang transparan dan efisien bagi calon mahasiswa.
+* **Framework:** [Laravel 11](https://laravel.com)
+* **Starter Kit:** [Laravel Breeze](https://www.google.com/search?q=https://laravel.com/docs/11.x/starter-kits%23laravel-breeze) (Blade & Alpine.js)
+* **CSS Framework:** [Tailwind CSS](https://tailwindcss.com)
+* **Database:** MySQL / MariaDB
+* **Icons:** Heroicons / FontAwesome
+
+
+
+## 📦 Alur Kerja Sistem (Workflow)
+
+Berikut adalah gambaran singkat proses pendaftaran di aplikasi ini:
+
+1. **Registrasi:** Calon mahasiswa membuat akun.
+2. **Pengisian Data:** Melengkapi profil dan data akademik.
+3. **Unggah Dokumen:** Mengunggah bukti fisik pendukung.
+4. **Verifikasi:** Admin memeriksa kelengkapan data.
+5. **Pengumuman:** Calon mahasiswa melihat status kelulusan di dashboard.
 
 ---
 
-## Fitur Utama
+## 💻 Cara Instalasi
 
-- ✅ Pendaftaran online mudah dan cepat
-- ✅ Tracking status aplikasi real-time
-- ✅ Upload dokumen digital
-- ✅ Pengumuman hasil seleksi
-- ✅ Dashboard calon mahasiswa
-- ✅ Sistem verifikasi data otomatis
-- ✅ Komunikasi langsung dengan admin
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal Anda:
 
----
-
-## Instalasi
+### 1. Clone Repositori
 
 ```bash
-git clone <repository-url>
-cd PMB
-npm install
-npm start
+git clone https://github.com/ryznxx/pmb-annuqayah.git
+cd pmb-annuqayah
+
 ```
 
+### 2. Instalasi Dependency (PHP & JS)
+
+```bash
+composer install
+npm install
+
+```
+
+### 3. Konfigurasi Environment
+
+Salin file `.env.example` menjadi `.env` dan sesuaikan pengaturan database Anda.
+
+```bash
+cp .env.example .env
+
+```
+
+### 4. Generate Application Key
+
+```bash
+php artisan key:generate
+
+```
+
+### 5. Migrasi Database & Seeding
+
+```bash
+php artisan migrate --seed
+
+```
+
+### 6. Menjalankan Aplikasi
+
+Buka dua terminal dan jalankan perintah berikut:
+
+**Terminal 1 (Laravel Server):**
+
+```bash
+php artisan serve
+
+```
+
+**Terminal 2 (Vite/Asset Compiler):**
+
+```bash
+npm run dev
+
+```
+
+Aplikasi sekarang dapat diakses melalui `http://localhost:8000`.
+
 ---
 
-## Penggunaan
+## 📂 Struktur Folder Penting
 
-1. Buka aplikasi di browser
-2. Lakukan registrasi akun
-3. Isi formulir pendaftaran
-4. Upload dokumen persyaratan
-5. Tunggu pengumuman hasil
+* `app/Http/Controllers`: Logika utama pendaftaran dan autentikasi.
+* `resources/views`: Template antarmuka (Blade files).
+* `routes/web.php`: Definisi rute aplikasi.
+* `database/migrations`: Skema database untuk tabel mahasiswa, prodi, dan berkas.
 
----
-
-## Persyaratan
-
-- Node.js v14+
-- Database MySQL/PostgreSQL
-- Browser modern
 
 ---
 
-## Kontribusi
+## ⚖️ Hak Cipta dan Ketentuan Penggunaan
 
-Silakan buat issue atau pull request untuk kontribusi.
+Copyright © 2024 Ridho Alfahresi. Semua Hak Dilindungi Undang-Undang.
 
----
+Source code ini dipublikasikan **hanya sebagai portofolio**. Tidak diizinkan bagi siapa pun untuk menyalin, mendistribusikan, atau menggunakan kode ini untuk kepentingan komersial, pribadi, maupun instansi (termasuk Universitas Annuqayah) tanpa izin tertulis dan penyelesaian administrasi yang sah dari pemilik kode.
 
-## Lisensi
+Pelanggaran terhadap ketentuan ini akan diproses sesuai hukum hak cipta yang berlaku.
 
-MIT License © 2024 Universitas Annuqayah
+Jika Anda memiliki pertanyaan, silakan hubungi pengembang melalui [GitHub Issues](https://github.com/ryznxx/pmb-annuqayah/issues).

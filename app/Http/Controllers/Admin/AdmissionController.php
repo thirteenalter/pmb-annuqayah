@@ -59,7 +59,11 @@ class AdmissionController extends Controller
   public function periodIndex()
   {
     $periods = RegistrationPeriod::orderBy('start_date', 'desc')->get();
-    return view('admin.admission.periods', compact('periods'));
+
+    // Ambil data user yang sedang login
+    $user = auth()->user();
+
+    return view('admin.admission.periods', compact('periods', 'user'));
   }
 
   public function periodStore(Request $request)
