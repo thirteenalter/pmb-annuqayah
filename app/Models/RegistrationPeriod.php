@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RegistrationPeriod extends Model
 {
@@ -28,5 +29,10 @@ class RegistrationPeriod extends Model
   public function users()
   {
     return $this->hasMany(User::class, 'registration_period_id');
+  }
+
+  public function registrations(): HasMany
+  {
+    return $this->hasMany(Registration::class, 'registration_period_id');
   }
 }

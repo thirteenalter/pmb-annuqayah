@@ -9,16 +9,29 @@
             <div class="grid gap-4">
                 @foreach ($exams as $exam)
                     <div
-                        class="bg-white border border-gray-200 rounded-2xl p-6 flex justify-between items-center group hover:border-gray-800 transition-all">
+                        class="bg-white border {{ $exam->sessions_exists ? 'border-gray-100 opacity-75' : 'border-gray-200 hover:border-gray-800' }} rounded-2xl p-6 flex justify-between items-center transition-all">
                         <div>
-                            <h3 class="font-bold text-gray-800 uppercase tracking-tight">{{ $exam->title }}</h3>
-                            <p class="text-xs text-gray-400 font-bold uppercase">{{ $exam->duration }} Menit •
-                                {{ $exam->questions_count ?? $exam->questions->count() }} Pertanyaan</p>
+                            <h3
+                                class="font-bold {{ $exam->sessions_exists ? 'text-gray-400' : 'text-gray-800' }} uppercase tracking-tight">
+                                {{ $exam->title }}
+                            </h3>
+                            <p class="text-xs text-gray-400 font-bold uppercase">
+                                {{ $exam->duration }} Menit • {{ $exam->questions_count ?? $exam->questions->count() }}
+                                Pertanyaan
+                            </p>
                         </div>
-                        <a href="{{ route('exams.show', $exam->id) }}"
-                            class="bg-gray-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase hover:bg-gray-700">
-                            Mulai Test
-                        </a>
+
+                        @if ($exam->sessions_exists)
+                            <button disabled
+                                class="bg-gray-100 text-gray-400 px-6 py-2.5 rounded-xl font-bold text-xs uppercase cursor-not-allowed border border-gray-200">
+                                SELESAI
+                            </button>
+                        @else
+                            <a href="{{ route('student.exams.show', $exam->id) }}"
+                                class="bg-gray-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase hover:bg-gray-700 shadow-sm active:scale-95 transition-all">
+                                Mulai Test
+                            </a>
+                        @endif
                     </div>
                 @endforeach
             </div>

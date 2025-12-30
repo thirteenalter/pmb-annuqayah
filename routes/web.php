@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ExamQuestionController;
+use App\Http\Controllers\Admin\AdmissionController;
+use App\Http\Controllers\Admin\CustomFieldController;
 use App\Http\Controllers\DashboardPayment;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -53,35 +55,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     return view('camaba.formulir.index');
   })->name('formulir');
 
-  Route::get('/formulir/isi-form', function () {
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
-
-    if ($user->identity && $user->registration) {
-      return redirect()->back()->with('error', 'Data identitas sudah difinalisasi dan tidak dapat diubah.');
-    }
-
-    return view('camaba.formulir.create', [
-      'user' => $user
-    ]);
-  })->name('isi-formulir');
-
-  Route::get('/formulir/isi-form/upload-dokumen', function () {
-    /** @var User $user */
-    $user = Auth::user();
-
-    // Pastikan user ada (sudah login)
-    if ($user) {
-      $user->load('document');
-    }
-
-    $isLocked = ($user && $user->document) ? true : false;
-
-    return view('camaba.formulir.dokumen', [
-      'user' => $user,
-      'isLocked' => $isLocked
-    ]);
-  })->name('isi-dokumen');
+  Route::get('/formulir/isi-form', [FormController::class, 'createIdentity'])->name('isi-formulir');
+  Route::get('/formulir/isi-form/upload-dokumen', [FormController::class, 'createDocuments'])->name('isi-dokumen');
 
   // routes/web.php
   Route::get('/formulir/pembayaran', function () {
@@ -98,9 +73,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ]);
   })->middleware(['auth', 'verified'])->name('formulir.pembayaran');
 
-  Route::get('/formulir/isi-form', function () {
-    return view('camaba.formulir.create');
-  })->name('isi-formulir');
 
 
   Route::get('/exams', [App\Http\Controllers\Student\ExamController::class, 'index'])->name('exams.index');
@@ -153,6 +125,35 @@ Route::middleware(['auth', 'verified', 'admin'])
     Route::get('/exams/{exam}/questions/{question}/edit', [ExamQuestionController::class, 'edit'])->name('exams.questions.edit');
     Route::put('/exams/{exam}/questions/{question}', [ExamQuestionController::class, 'update'])->name('exams.questions.update');
     Route::delete('/exams/{exam}/questions/{question}', [ExamQuestionController::class, 'destroy'])->name('exams.questions.destroy');
+
+    Route::prefix('admission')->name('admission.')->group(function () {
+      // Dashboard & Laporan Statistik
+      Route::get('/dashboard', [AdmissionController::class, 'dashboard'])->name('dashboard');
+
+      // Pengaturan Program Studi
+      Route::get('/study-programs', [AdmissionController::class, 'programIndex'])->name('programs.index');
+      Route::post('/study-programs', [AdmissionController::class, 'programStore'])->name('programs.store');
+      Route::delete('/study-programs/{id}', [AdmissionController::class, 'programDestroy'])->name('programs.destroy');
+
+      // Pengaturan Periode/Gelombang
+      Route::get('/periods', [AdmissionController::class, 'periodIndex'])->name('periods.index');
+      Route::post('/periods', [AdmissionController::class, 'periodStore'])->name('periods.store');
+      Route::patch('/periods/{id}/toggle', [AdmissionController::class, 'periodToggle'])->name('periods.toggle');
+      Route::delete('/periods/{id}', [AdmissionController::class, 'periodDestroy'])->name('periods.destroy');
+      Route::put('/periods/{id}', [AdmissionController::class, 'update'])->name('periods.update');
+    });
+
+    Route::prefix('custom-fields')->name('custom-fields.')->group(function () {
+      Route::get('/', [CustomFieldController::class, 'index'])->name('index');
+      Route::post('/', [CustomFieldController::class, 'store'])->name('store');
+      Route::delete('/{customField}', [CustomFieldController::class, 'destroy'])->name('destroy');
+
+      // Tambahan jika Anda ingin fitur update nantinya
+      Route::put('/{customField}', [CustomFieldController::class, 'update'])->name('update');
+
+      // Route untuk mengatur urutan (optional)
+      Route::post('/reorder', [CustomFieldController::class, 'reorder'])->name('reorder');
+    });
   });
 
 Route::middleware('auth')->group(function () {

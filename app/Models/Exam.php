@@ -14,4 +14,9 @@ class Exam extends Model
   {
     return $this->hasMany(ExamQuestion::class);
   }
+
+  public function sessions(): HasMany
+  {
+    return $this->hasMany(ExamSession::class);
+  }
 }

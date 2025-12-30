@@ -18,7 +18,7 @@ return new class extends Migration
       $table->string('participant_number')->nullable(); // Nomor Peserta
       $table->string('school_origin');  // Nama Sekolah Asal
       $table->year('graduation_year');  // Tahun Lulus
-      $table->string('study_program');  // Pilihan Program Studi
+      $table->foreignId('study_program_id')->constrained()->onDelete('cascade');
       $table->string('achievement_certificate')->nullable();
       $table->timestamps();
     });

@@ -9,10 +9,10 @@ return new class extends Migration
   /**
    * Run the migrations.
    */
-  public function up()
+  public function up(): void
   {
-    Schema::table('users', function (Blueprint $table) {
-      $table->foreignId('registration_period_id')->nullable()->constrained();
+    Schema::table('registrations', function (Blueprint $table) {
+      $table->integer('graduation_year')->change();
     });
   }
 
@@ -21,7 +21,7 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::table('users', function (Blueprint $table) {
+    Schema::table('registrations', function (Blueprint $table) {
       //
     });
   }

@@ -48,7 +48,8 @@ class UserDashboard extends Controller
       'document',     // Dari model Document.php
       'payment',      // Dari model Payment.php
       'validity',     // Dari model Validity.php
-      'registrationPeriod' // Dari model RegistrationPeriod.php
+      'registrationPeriod', // Dari model RegistrationPeriod.php
+      'customFieldValues.customField' // Relasi untuk custom fields
     ])->findOrFail($id);
 
     return view('admin.pendaftar.show', compact('user'));

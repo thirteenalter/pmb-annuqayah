@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use app\Models\RegistrationPeriod;
+use App\Models\RegistrationPeriod;
 
 class RegistrationPeriodSeeder extends Seeder
 {

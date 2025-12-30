@@ -11,9 +11,9 @@
                 <span class="font-semibold text-sm">List Pendaftar</span>
             </a>
 
-            <a href="#"
+            <a href="{{ route('admin.admission.dashboard') }}"
                 class="flex-none flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-200 
-        {{ request()->routeIs('admin.admisi.*') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
+        {{ request()->routeIs('admin.admission.dashboard') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
                 <span class="material-symbols-outlined" style="font-size: medium;">
                     other_admission
                 </span>
@@ -29,9 +29,9 @@
                 <span class="font-semibold text-sm">Pembayaran</span>
             </a>
 
-            <a href="#"
+            <a href="{{ route('admin.admission.periods.index') }}"
                 class="flex-none flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-200 
-        {{ request()->routeIs('admin.gelombang.*') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
+        {{ request()->routeIs('admin.admission.periods.index') ? 'bg-gray-600 border-gray-700e text-white shadow-lg shadow-indigo-100' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-white hover:border-indigo-400 hover:text-indigo-600' }}">
                 <span class="material-symbols-outlined" style="font-size: medium;">
                     waves
                 </span>

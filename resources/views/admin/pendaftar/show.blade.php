@@ -93,17 +93,26 @@
                     <div class="space-y-4">
                         <div>
                             <span class="text-[10px] text-slate-500 uppercase font-bold block mb-1">Gelombang</span>
-                            <span class="text-sm font-bold">{{ $user->registrationPeriod?->name ?? '-' }}</span>
+                            {{-- Ambil dari relasi registration jika user->registration_period_id kosong --}}
+                            <span
+                                class="text-sm font-bold">{{ $user->registrationPeriod?->name ?? ($user->registration?->registrationPeriod?->name ?? '-') }}</span>
                         </div>
                         <div>
                             <span class="text-[10px] text-slate-500 uppercase font-bold block mb-1">Prodi</span>
-                            <span
-                                class="text-sm font-bold text-indigo-400">{{ $user->registration?->study_program ?? '-' }}</span>
+                            <span class="text-sm font-bold text-indigo-400">
+                                {{-- Jika menggunakan relasi ke model StudyProgram --}}
+                                {{ $user->registration?->studyProgram?->name ?? ($user->registration?->study_program ?? '-') }}
+                            </span>
                         </div>
                         <div>
                             <span class="text-[10px] text-slate-500 uppercase font-bold block mb-1">No. Peserta</span>
                             <span
                                 class="text-sm font-mono font-bold">{{ $user->registration?->participant_number ?? '-' }}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold block mb-1">Jalur</span>
+                            <span
+                                class="text-sm font-mono font-bold">{{ $user->registration?->entry_path ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
@@ -231,6 +240,87 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Custom Fields - Informasi Tambahan --}}
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                        <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest">Informasi Tambahan
+                            (Custom)</h4>
+                    </div>
+                    <div class="p-6">
+                        @php
+                            $customFields = $user->customFieldValues->filter(function ($item) {
+                                return $item->customField !== null && $item->customField->category == 'registration';
+                            });
+                        @endphp
+
+                        @if ($customFields->count() > 0) {{-- Gunakan count() > 0 --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
+                                @foreach ($customFields as $value)
+                                    <div>
+                                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                                            {{ $value->customField->label }}
+                                        </label>
+                                        <p class="text-sm font-bold text-slate-800">{{ $value->value ?? '-' }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="py-4 text-center">
+                                <span class="material-symbols-outlined text-slate-300 mb-2">info</span>
+                                <p class="text-xs text-slate-400 italic">Tidak ada data informasi tambahan
+                                    (registration) untuk pendaftar ini.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                        <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest">Dokumen Tambahan
+                            (Custom)</h4>
+                    </div>
+                    <div class="p-6">
+                        {{-- Tambahan untuk Custom Fields Kategori Document --}}
+                        @php
+                            $customDocs = $user->customFieldValues->filter(function ($item) {
+                                return $item->customField !== null && $item->customField->category == 'document';
+                            });
+                        @endphp
+
+                        @if ($customDocs->count() > 0)
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-widest">Dokumen
+                                Tambahan (Custom)</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                @foreach ($customDocs as $cDoc)
+                                    <div class="p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 text-center">
+                                        <p class="text-[9px] font-bold text-indigo-400 uppercase mb-2">
+                                            {{ $cDoc->customField->label }}
+                                        </p>
+
+                                        @if ($cDoc->customField->type == 'file')
+                                            @if ($cDoc->value)
+                                                <a href="{{ asset('storage/' . $cDoc->value) }}" target="_blank"
+                                                    class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 underline flex items-center justify-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">description</span>
+                                                    Lihat File
+                                                </a>
+                                            @else
+                                                <span class="text-[10px] text-slate-300 italic">Belum
+                                                    diunggah</span>
+                                            @endif
+                                        @else
+                                            {{-- Jika tipenya bukan file (text/select/date) --}}
+                                            <p class="text-xs font-bold text-slate-700">{{ $cDoc->value ?? '-' }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
 
                 <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
                     <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest mb-4">Catatan Perbaikan

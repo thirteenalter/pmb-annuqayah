@@ -86,4 +86,9 @@ class User extends Authenticatable
   {
     return $this->belongsTo(RegistrationPeriod::class, 'registration_period_id');
   }
+
+  public function customFieldValues()
+  {
+    return $this->hasMany(CustomFieldValue::class);
+  }
 }
