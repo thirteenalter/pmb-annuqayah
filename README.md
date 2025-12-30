@@ -33,6 +33,7 @@ Berikut adalah gambaran singkat proses pendaftaran di aplikasi ini:
 2. **Pengisian Data:** Melengkapi profil dan data akademik.
 3. **Unggah Dokumen:** Mengunggah bukti fisik pendukung.
 4. **Verifikasi:** Admin memeriksa kelengkapan data.
+4. **CBT:** Test Ujian.
 5. **Pengumuman:** Calon mahasiswa melihat status kelulusan di dashboard.
 
 ---
