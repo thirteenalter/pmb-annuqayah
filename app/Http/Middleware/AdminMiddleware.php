@@ -15,14 +15,16 @@ class AdminMiddleware
    */
   public function handle($request, Closure $next)
   {
+    // 1. Pastikan user login
     if (!auth()->check()) {
-      return redirect('/login');
+      return redirect()->route('login');
     }
 
-    if (auth()->user()->isAdmin()) {
-      return redirect()->route('admin.dashboard');
+    // 2. Gunakan fungsi isAdmin() yang sudah Anda buat di model User
+    if (!auth()->user()->isAdmin()) {
+      // Jika bukan admin, jangan kasih 500, tapi 403 (Forbidden)
+      abort(403, 'Unauthorized action. Anda bukan Admin.');
     }
-
 
     return $next($request);
   }
