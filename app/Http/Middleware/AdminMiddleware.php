@@ -19,9 +19,10 @@ class AdminMiddleware
       return redirect('/login');
     }
 
-    if (!method_exists(auth()->user(), 'isAdmin') || !auth()->user()->isAdmin()) {
-      abort(403);
+    if (auth()->user()->isAdmin()) {
+      return redirect()->route('admin.dashboard');
     }
+
 
     return $next($request);
   }
