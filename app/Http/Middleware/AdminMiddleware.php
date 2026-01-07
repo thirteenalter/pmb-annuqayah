@@ -15,7 +15,11 @@ class AdminMiddleware
    */
   public function handle($request, Closure $next)
   {
-    if (!auth()->check() || !auth()->user()->isAdmin()) {
+    if (!auth()->check()) {
+      return redirect('/login');
+    }
+
+    if (!method_exists(auth()->user(), 'isAdmin') || !auth()->user()->isAdmin()) {
       abort(403);
     }
 
