@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+
+
 
 class RegisteredUserController extends Controller
 {
@@ -37,14 +40,24 @@ class RegisteredUserController extends Controller
       'password' => ['required', 'confirmed', Rules\Password::defaults()],
     ]);
 
-    $user = User::create([
-      'name' => $request->name,
-      'nik' => $request->nik,
-      'nama_ibu' => $request->nama_ibu,
-      'email' => $request->email,
-      'status' => 'pending',
-      'password' => Hash::make($request->password),
-    ]);
+    $user = DB::transaction(function () use ($request) {
+      $user = User::create([
+        'name' => $request->name,
+        'nik' => $request->nik,
+        'nama_ibu' => $request->nama_ibu,
+        'email' => $request->email,
+        'status' => 'pending',
+        'password' => Hash::make($request->password),
+      ]);
+
+      $user->validity()->create([
+        'is_data_valid' => false,
+        'is_payment_valid' => false,
+        'final_status' => 'pending',
+      ]);
+
+      return $user;
+    });
 
     event(new Registered($user));
 
