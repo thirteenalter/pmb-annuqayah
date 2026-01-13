@@ -4,7 +4,8 @@
     @php
         // Jika karena suatu alasan $user tidak sampai ke sini, ambil langsung dari auth
         $user = $user ?? auth()->user();
-        $isLocked = $user->validity->is_data_valid == 1 && $user->validity->final_status !== 'invalid';
+        $isLocked =
+            optional($user->validity)->is_data_valid == 1 && optional($user->validity)->final_status !== 'invalid';
     @endphp
 
     <div class="min-h-screen bg-slate-50 py-10 px-4">
