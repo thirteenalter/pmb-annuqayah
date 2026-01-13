@@ -143,6 +143,11 @@
                             <p class="text-sm font-bold text-slate-800">{{ $user->identity?->full_name ?? '-' }}</p>
                         </div>
                         <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Nama Lengkap
+                                Ibu</label>
+                            <p class="text-sm font-bold text-slate-800">{{ $user->nama_ibu ?? '-' }}</p>
+                        </div>
+                        <div>
                             <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">NIK</label>
                             <p class="text-sm font-bold text-slate-800 tracking-wider">
                                 {{ $user->identity?->nik ?? '-' }}</p>

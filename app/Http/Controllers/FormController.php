@@ -77,19 +77,34 @@ class FormController extends Controller
 
   public function storeIdentity(Request $request)
   {
+    $user = Auth::user();
+
     $request->validate([
       'full_name'   => 'required|string|max:255',
-      'nik_identity' => 'required|digits:16',
+      // Validasi Unique: tabel 'identities', kolom 'nik', kecualikan ID user saat ini
+      'nik_identity' => [
+        'required',
+        'digits:16',
+        'unique:identities,nik,' . $user->id . ',user_id'
+      ],
       'birth_place' => 'required|string',
       'birth_date'  => 'required|date',
       'gender'      => 'required|in:L,P',
       'entry_path'      => 'required',
+      // Jika nomor peserta juga harus unik (opsional)
+      'participant_number' => [
+        'nullable',
+        'unique:registrations,participant_number,' . $user->id . ',user_id'
+      ],
       'school_origin'   => 'required',
       'graduation_year' => 'required|numeric',
       'study_program'   => 'required',
+    ], [
+      // Pesan kustom agar user paham
+      'nik_identity.unique' => 'NIK ini sudah terdaftar. Silakan hubungi admin jika ini adalah NIK Anda.',
+      'participant_number.unique' => 'Nomor peserta ini sudah digunakan oleh pendaftar lain.',
+      'nik_identity.digits' => 'NIK harus berjumlah 16 digit.',
     ]);
-
-    $user = Auth::user();
 
     DB::transaction(function () use ($request, $user) {
       $user->identity()->updateOrCreate(['user_id' => $user->id], [
@@ -105,10 +120,9 @@ class FormController extends Controller
         'participant_number' => $request->participant_number,
         'school_origin'      => $request->school_origin,
         'graduation_year'    => $request->graduation_year,
-        'study_program_id'   => $request->study_program, // Sesuaikan nama kolom jika di migration pakai study_program_id
+        'study_program_id'   => $request->study_program,
       ]);
 
-      // TWEAK: Simpan Custom Fields Kategori Registration
       $this->saveCustomFields($request, 'registration');
     });
 

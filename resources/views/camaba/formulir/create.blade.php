@@ -4,7 +4,7 @@
     @php
         // Jika karena suatu alasan $user tidak sampai ke sini, ambil langsung dari auth
         $user = $user ?? auth()->user();
-        $isLocked = $user->identity && $user->registration ? true : false;
+        $isLocked = $user->validity->is_data_valid == 1 && $user->validity->final_status !== 'invalid';
     @endphp
 
     <div class="min-h-screen bg-slate-50 py-10 px-4">
@@ -37,6 +37,21 @@
                 </div>
             @endif
 
+            {{-- Tambahkan Fallback Error Global --}}
+            @if ($errors->any())
+                <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl">
+                    <div class="flex items-center gap-2 mb-2 font-bold text-rose-800">
+                        <span class="material-symbols-outlined">error</span>
+                        Terjadi Kesalahan!
+                    </div>
+                    <ul class="list-disc list-inside text-sm space-y-1 ml-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('form.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
 
@@ -53,7 +68,7 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Lengkap (Sesuai
                                 Ijazah)</label>
                             <input type="text" name="full_name"
-                                value="{{ old('full_name', $user->identity->full_name ?? '') }}"
+                                value="{{ old('full_name', $user->identity->full_name ?? ($user->name ?? '')) }}"
                                 {{ $isLocked ? 'readonly' : '' }}
                                 class="w-full px-4 py-3 rounded-xl border-slate-200 transition-all {{ $isLocked ? 'bg-slate-50 text-slate-500' : 'focus:border-indigo-500 focus:ring-indigo-500' }}">
                         </div>
@@ -61,7 +76,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">NIK (Sesuai KTP)</label>
                             <input type="number" name="nik_identity"
-                                value="{{ old('nik_identity', $user->identity->nik ?? '') }}"
+                                value="{{ old('nik_identity', $user->identity->nik ?? ($user->nik ?? '')) }}"
                                 {{ $isLocked ? 'readonly' : '' }}
                                 class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50 text-slate-500' : '' }}">
                         </div>
@@ -78,6 +93,14 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal Lahir</label>
                             <input type="date" name="birth_date"
                                 value="{{ old('birth_date', $user->identity->birth_date ?? '') }}"
+                                {{ $isLocked ? 'readonly' : '' }}
+                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ibu</label>
+                            <input type="text" name="school_origin"
+                                value="{{ old('school_origin', $user->nama_ibu ?? '') }}"
                                 {{ $isLocked ? 'readonly' : '' }}
                                 class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
                         </div>
@@ -140,6 +163,8 @@
                                 {{ $isLocked ? 'readonly' : '' }}
                                 class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
                         </div>
+
+
 
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Tahun Lulus</label>
