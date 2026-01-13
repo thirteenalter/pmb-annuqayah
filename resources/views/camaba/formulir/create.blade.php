@@ -2,7 +2,6 @@
     <x-subnavbarmaba />
 
     @php
-        // Jika karena suatu alasan $user tidak sampai ke sini, ambil langsung dari auth
         $user = $user ?? auth()->user();
         $validity = $user->validity;
 
