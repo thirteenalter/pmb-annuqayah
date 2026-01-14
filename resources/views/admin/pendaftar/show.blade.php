@@ -188,8 +188,96 @@
                 </div>
 
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+
                     <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                        <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest">Berkas & Pembayaran
+                        <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest">
+                            Berkas
+                        </h4>
+
+                        <div class="flex gap-2">
+                            {{-- VALID --}}
+                            <form action="{{ route('admin.documents.toggle', $user) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+
+                                <input type="hidden" name="is_document_valid" value="1">
+
+                                <button
+                                    class="px-3 py-1.5 rounded-lg text-[9px] font-black transition-all
+                {{ $user->validity?->is_document_valid
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-white text-emerald-600 border border-emerald-200' }}">
+                                    VALID
+                                </button>
+                            </form>
+
+                            {{-- INVALID --}}
+                            <form action="{{ route('admin.documents.toggle', $user) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+
+                                <input type="hidden" name="is_document_valid" value="0">
+
+                                <button
+                                    class="px-3 py-1.5 rounded-lg text-[9px] font-black transition-all
+                {{ !$user->validity?->is_document_valid && $user->validity?->verified_at
+                    ? 'bg-rose-600 text-white'
+                    : 'bg-white text-rose-600 border border-rose-200' }}">
+                                    TOLAK
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            @php
+                                $docs = [
+                                    ['label' => 'KTP', 'file' => $user->document?->ktp_scan, 'type' => 'ktp_scan'],
+                                    [
+                                        'label' => 'Foto Formal',
+                                        'file' => $user->document?->photo_formal,
+                                        'type' => 'photo_formal',
+                                    ],
+                                    ['label' => 'KK', 'file' => $user->document?->kk_scan, 'type' => 'kk_scan'],
+                                    [
+                                        'label' => 'Ijazah',
+                                        'file' => $user->document?->ijazah_scan,
+                                        'type' => 'ijazah_scan',
+                                    ],
+                                    [
+                                        'label' => 'Rapor',
+                                        'file' => $user->document?->report_scan,
+                                        'type' => 'report_scan',
+                                    ],
+                                ];
+                            @endphp
+
+                            @foreach ($docs as $doc)
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase mb-2">{{ $doc['label'] }}
+                                    </p>
+
+                                    @if ($doc['file'])
+                                        {{-- Perhatikan bagian $doc['type'] di bawah ini --}}
+                                        <a href="{{ route('admin.documents.view', [$user->id, $doc['type']]) }}"
+                                            target="_blank"
+                                            class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 underline">
+                                            Buka File
+                                        </a>
+                                    @else
+                                        <span class="text-[10px] text-slate-300 italic">Kosong</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest"> Pembayaran
                         </h4>
                         <div class="flex gap-2">
                             <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
@@ -220,30 +308,9 @@
                             @endif
                         </div>
 
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            @php
-                                $docs = [
-                                    ['label' => 'KTP', 'file' => $user->document?->ktp_scan],
-                                    ['label' => 'KK', 'file' => $user->document?->kk_scan],
-                                    ['label' => 'Ijazah', 'file' => $user->document?->ijazah_scan],
-                                    ['label' => 'Rapor', 'file' => $user->document?->report_scan],
-                                ];
-                            @endphp
-                            @foreach ($docs as $doc)
-                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                                    <p class="text-[9px] font-bold text-slate-400 uppercase mb-2">{{ $doc['label'] }}
-                                    </p>
-                                    @if ($doc['file'])
-                                        <a href="{{ asset('storage/' . $doc['file']) }}" target="_blank"
-                                            class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 underline">Buka
-                                            File</a>
-                                    @else
-                                        <span class="text-[10px] text-slate-300 italic">Kosong</span>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
+
                     </div>
+
                 </div>
 
                 {{-- Custom Fields - Informasi Tambahan --}}
@@ -294,8 +361,9 @@
                         @endphp
 
                         @if ($customDocs->count() > 0)
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-widest">Dokumen
-                                Tambahan (Custom)</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-widest">
+                                Dokumen Tambahan (Custom)
+                            </p>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 @foreach ($customDocs as $cDoc)
                                     <div class="p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 text-center">
@@ -305,19 +373,22 @@
 
                                         @if ($cDoc->customField->type == 'file')
                                             @if ($cDoc->value)
-                                                <a href="{{ asset('storage/' . $cDoc->value) }}" target="_blank"
+                                                {{-- 
+                            PERBAIKAN: Gunakan Route viewAdminCustomFile.
+                            Kita mengirimkan objek $user dan ID custom field-nya.
+                        --}}
+                                                <a href="{{ route('admin.custom.view', [$user->id, $cDoc->custom_field_id]) }}"
+                                                    target="_blank"
                                                     class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 underline flex items-center justify-center gap-1">
                                                     <span class="material-symbols-outlined text-xs">description</span>
                                                     Lihat File
                                                 </a>
                                             @else
-                                                <span class="text-[10px] text-slate-300 italic">Belum
-                                                    diunggah</span>
+                                                <span class="text-[10px] text-slate-300 italic">Belum diunggah</span>
                                             @endif
                                         @else
                                             {{-- Jika tipenya bukan file (text/select/date) --}}
-                                            <p class="text-xs font-bold text-slate-700">{{ $cDoc->value ?? '-' }}
-                                            </p>
+                                            <p class="text-xs font-bold text-slate-700">{{ $cDoc->value ?? '-' }}</p>
                                         @endif
                                     </div>
                                 @endforeach

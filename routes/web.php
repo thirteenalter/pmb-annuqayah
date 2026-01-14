@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ExamQuestionController;
 use App\Http\Controllers\Admin\AdmissionController;
 use App\Http\Controllers\Admin\CustomFieldController;
+use App\Http\Controllers\Admin\Validators;
 use App\Http\Controllers\DashboardPayment;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     return view('camaba.formulir.index');
   })->name('formulir');
 
+
+
+
   Route::get('/formulir/isi-form', [FormController::class, 'createIdentity'])->name('isi-formulir');
   Route::get('/formulir/isi-form/upload-dokumen', [FormController::class, 'createDocuments'])->name('isi-dokumen');
 
@@ -87,6 +91,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::post('/formulir/isi-form', [FormController::class, 'storeIdentity'])->name('form.store');
   Route::post('/formulir/isi-form/upload-dokumen', [FormController::class, 'storeDocuments'])->name('dokumen.store');
   Route::post('/formulir/pembayaran', [FormController::class, 'storePayment'])->name('payment.store');
+  Route::get('/documents/{type}', [FormController::class, 'viewStoreDocument'])
+    ->middleware('auth')
+    ->name('documents.view');
+  // User
+  Route::get('/dokumen/custom/{fieldId}', [FormController::class, 'viewCustomFile'])->name('custom.view');
+
+  // Admin
 });
 
 Route::middleware(['auth', 'verified', 'admin'])
@@ -96,6 +107,19 @@ Route::middleware(['auth', 'verified', 'admin'])
     Route::get('/dashboard', function () {
       return view('admin.dashboard.index');
     })->name('dashboard');
+
+    Route::patch(
+      '/users/{user}/documents/validate',
+      [Validators::class, 'toggleDocumentValidity']
+    )->name('documents.toggle');
+
+    Route::get(
+      '/users/{user}/documents/{type}',
+      [FormController::class, 'viewAdminDocument']
+    )->name('documents.view');
+
+    Route::get('/admin/user/{user}/custom/{fieldId}', [FormController::class, 'viewAdminCustomFile'])->name('custom.view');
+
 
     Route::get('/dashboard/list-pendaftar', [UserDashboard::class, 'pendaftar'])->name('dashboard.pendaftar');
 

@@ -1,11 +1,6 @@
 <x-app-layout>
     <x-subnavbarmaba />
 
-    @php
-        $user = $user ?? auth()->user();
-        $isLocked = $user->document ? true : false;
-    @endphp
-
     <div class="min-h-screen bg-slate-50 py-10 px-4">
         <div class="max-w-7xl mx-auto">
 
@@ -21,12 +16,59 @@
                 <span class="material-symbols-outlined text-amber-600">cloud_upload</span>
                 <p class="text-sm text-amber-800">
                     Gunakan file format <strong>PDF atau JPG/PNG</strong> dengan ukuran maksimal <strong>2MB</strong>.
-                    @if ($isLocked)
-                        <br><strong class="text-indigo-700 underline">Dokumen telah dikunci. Silakan hubungi admin jika
-                            ingin mengubah.</strong>
-                    @endif
+
                 </p>
             </div>
+
+            @if ($isLocked)
+                {{-- Tampilan saat data SUDAH TERKUNCI --}}
+                <div class="mb-8 flex gap-4 p-4 bg-indigo-50 border border-indigo-200 rounded-2xl">
+                    <span class="material-symbols-outlined text-indigo-600">lock</span>
+                    <div>
+                        <p class="text-sm font-bold text-indigo-900">Data Terkunci & Tersimpan</p>
+                        <p class="text-sm text-indigo-800">Dokumen Anda telah berhasil difinalisasi. Silakan lanjut ke
+                            tahap berikutnya.</p>
+                    </div>
+                </div>
+            @else
+                <div class="mb-8 flex gap-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
+                    <span class="material-symbols-outlined text-amber-600">info</span>
+                    <p class="text-sm text-amber-800">
+                        Pastikan data yang Anda masukkan sesuai
+                    </p>
+                </div>
+
+                @php
+                    $docs = $user->document;
+                    // Cek apakah semua dokumen wajib sudah diunggah
+                    $isComplete =
+                        $docs?->photo_formal &&
+                        $docs?->ktp_scan &&
+                        $docs?->kk_scan &&
+                        $docs?->ijazah_scan &&
+                        $docs?->report_scan;
+                @endphp
+
+                @if ($isComplete)
+                    <div
+                        class="mb-4 p-4 bg-green-100 border border-green-200 text-green-700 rounded-2xl flex items-center gap-2">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span class="text-sm">
+                            Data Dokumen telah dilengkapi, menunggu verifikasi admin.
+                            <span class="font-bold">(Hubungi admin jika berkas belum diverifikasi dalam 7 hari).</span>
+                        </span>
+                    </div>
+                @else
+                    <div
+                        class="mb-4 p-4 bg-amber-100 border border-amber-200 text-amber-700 rounded-2xl flex items-center gap-2">
+                        <span class="material-symbols-outlined">warning</span>
+                        <span class="text-sm">Dokumen pendaftaran Anda belum lengkap. Silakan unggah berkas yang
+                            diperlukan.</span>
+                    </div>
+                @endif
+
+            @endif
+
 
             <form action="{{ route('dokumen.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
@@ -44,9 +86,10 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Foto Pribadi Formal</label>
                             @if ($user->document?->photo_formal)
-                                <a href="{{ asset('storage/' . $user->document->photo_formal) }}" target="_blank"
-                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">Lihat File
-                                    yang Sudah Diunggah</a>
+                                <a href="{{ route('documents.view', 'photo_formal') }}" target="_blank"
+                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">
+                                    Lihat File yang Sudah Diunggah
+                                </a>
                             @endif
                             <input type="file" name="photo_formal" {{ $isLocked ? 'disabled' : '' }}
                                 class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 border border-slate-200 rounded-xl p-1">
@@ -56,9 +99,10 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Scan KTP / Kartu
                                 Identitas</label>
                             @if ($user->document?->ktp_scan)
-                                <a href="{{ asset('storage/' . $user->document->ktp_scan) }}" target="_blank"
-                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">Lihat File
-                                    yang Sudah Diunggah</a>
+                                <a href="{{ route('documents.view', 'ktp_scan') }}" target="_blank"
+                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">
+                                    Lihat File yang Sudah Diunggah
+                                </a>
                             @endif
                             <input type="file" name="ktp_scan" {{ $isLocked ? 'disabled' : '' }}
                                 class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 border border-slate-200 rounded-xl p-1">
@@ -68,9 +112,10 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Scan Kartu Keluarga
                                 (KK)</label>
                             @if ($user->document?->kk_scan)
-                                <a href="{{ asset('storage/' . $user->document->kk_scan) }}" target="_blank"
-                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">Lihat File
-                                    yang Sudah Diunggah</a>
+                                <a href="{{ route('documents.view', 'kk_scan') }}" target="_blank"
+                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">
+                                    Lihat File yang Sudah Diunggah
+                                </a>
                             @endif
                             <input type="file" name="kk_scan" {{ $isLocked ? 'disabled' : '' }}
                                 class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 border border-slate-200 rounded-xl p-1">
@@ -79,9 +124,10 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Ijazah Terakhir / SKL</label>
                             @if ($user->document?->ijazah_scan)
-                                <a href="{{ asset('storage/' . $user->document->ijazah_scan) }}" target="_blank"
-                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">Lihat File
-                                    yang Sudah Diunggah</a>
+                                <a href="{{ route('documents.view', 'ijazah_scan') }}" target="_blank"
+                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">
+                                    Lihat File yang Sudah Diunggah
+                                </a>
                             @endif
                             <input type="file" name="ijazah_scan" {{ $isLocked ? 'disabled' : '' }}
                                 class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 border border-slate-200 rounded-xl p-1">
@@ -91,9 +137,10 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Scan Rapor (Semester 1 -
                                 5)</label>
                             @if ($user->document?->report_scan)
-                                <a href="{{ asset('storage/' . $user->document->report_scan) }}" target="_blank"
-                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">Lihat File
-                                    yang Sudah Diunggah</a>
+                                <a href="{{ route('documents.view', 'report_scan') }}" target="_blank"
+                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">
+                                    Lihat File yang Sudah Diunggah
+                                </a>
                             @endif
                             <input type="file" name="report_scan" {{ $isLocked ? 'disabled' : '' }}
                                 class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 border border-slate-200 rounded-xl p-1">
@@ -116,10 +163,10 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Sertifikat Prestasi / Piagam
                                 Lomba (Opsional)</label>
                             @if ($user->document?->achievement_certificate)
-                                <a href="{{ asset('storage/' . $user->document->achievement_certificate) }}"
-                                    target="_blank"
-                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline text-italic">Lihat
-                                    File yang Sudah Diunggah</a>
+                                <a href="{{ route('documents.view', 'achievement_certificate') }}" target="_blank"
+                                    class="text-xs text-indigo-600 mb-2 block font-bold italic underline">
+                                    Lihat File yang Sudah Diunggah
+                                </a>
                             @endif
                             <input type="file" name="achievement_certificate" {{ $isLocked ? 'disabled' : '' }}
                                 class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 border border-slate-200 rounded-xl p-1">
@@ -145,9 +192,9 @@
                                         </label>
 
                                         @if ($existingCustomValue)
-                                            <a href="{{ asset('storage/' . $existingCustomValue) }}" target="_blank"
+                                            <a href="{{ route('custom.view', $field->id) }}" target="_blank"
                                                 class="text-xs text-indigo-600 mb-2 block font-bold italic underline flex items-center gap-1">
-                                                <span class="material-symbols-outlined text-sm">visibility</span> Lihat
+                                                Lihat
                                                 File yang Sudah Diunggah
                                             </a>
                                         @endif

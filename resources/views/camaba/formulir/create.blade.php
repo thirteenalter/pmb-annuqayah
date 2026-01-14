@@ -29,8 +29,7 @@
                 <div class="mb-8 flex gap-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
                     <span class="material-symbols-outlined text-amber-600">info</span>
                     <p class="text-sm text-amber-800">
-                        Pastikan data yang Anda masukkan sesuai dengan <strong>KTP/KK</strong> dan
-                        <strong>Ijazah</strong> terakhir.
+                        Pastikan data yang Anda masukkan sesuai
                     </p>
                 </div>
 
@@ -39,7 +38,7 @@
                     <div
                         class="mb-4 p-4 bg-green-100 border border-green-200 text-green-700 rounded-2xl flex items-center gap-2">
                         <span class="material-symbols-outlined">check_circle</span>
-                        <span class="text-sm">Data identitas telah dilengkapi, menunggu verifikasi admin. (Hubungi admin
+                        <span class="text-sm">Data dokumen telah dilengkapi, menunggu verifikasi admin. (Hubungi admin
                             jika berkas belum diverifikasi dalam 7 hari).</span>
                     </div>
                 @endif
