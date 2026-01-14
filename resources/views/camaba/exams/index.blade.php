@@ -27,7 +27,7 @@
                                 SELESAI
                             </button>
                         @else
-                            <a href="{{ route('student.exams.show', $exam->id) }}"
+                            <a href="{{ route('exams.show', $exam->id) }}"
                                 class="bg-gray-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase hover:bg-gray-700 shadow-sm active:scale-95 transition-all">
                                 Mulai Test
                             </a>

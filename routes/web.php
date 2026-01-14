@@ -125,6 +125,7 @@ Route::middleware(['auth', 'verified', 'admin'])
     Route::get('/exams/{exam}/questions/{question}/edit', [ExamQuestionController::class, 'edit'])->name('exams.questions.edit');
     Route::put('/exams/{exam}/questions/{question}', [ExamQuestionController::class, 'update'])->name('exams.questions.update');
     Route::delete('/exams/{exam}/questions/{question}', [ExamQuestionController::class, 'destroy'])->name('exams.questions.destroy');
+    Route::delete('/exams/{exam}', [App\Http\Controllers\Admin\ExamController::class, 'destroy'])->name('exams.destroy');
 
     Route::prefix('admission')->name('admission.')->group(function () {
       // Dashboard & Laporan Statistik

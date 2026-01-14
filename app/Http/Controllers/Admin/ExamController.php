@@ -57,4 +57,13 @@ class ExamController extends Controller
 
     return view('admin.exams.monitoring', compact('sessions'));
   }
+
+  public function destroy($id)
+  {
+    $exam = Exam::findOrFail($id);
+
+    $exam->delete();
+
+    return redirect()->back()->with('success', 'Ujian berhasil dihapus!');
+  }
 }

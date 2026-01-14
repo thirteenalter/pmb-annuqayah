@@ -10,30 +10,28 @@ use App\Models\CustomField; // Tambahkan ini
 use App\Models\CustomFieldValue; // Tambahkan ini
 use Illuminate\Support\Facades\Storage;
 use App\Models\StudyProgram;
+use App\Models\Validity;
 
 class FormController extends Controller
 {
 
   public function createIdentity()
   {
-    $user = Auth::user()->load(['identity', 'registration', 'customFieldValues']);
+    $user = Auth::user()->load(['identity', 'registration', 'validity']);
 
-
-
-    // TWEAK: Ambil data jurusan yang aktif
-
-    $isLocked = ($user->payment || $user->status == 'valid');
+    // Cek: ada data validity DAN (is_data_valid bernilai 1 ATAU final_status-nya valid)
+    $isLocked = $user->validity && (
+      $user->validity->is_data_valid == 1
+    );
 
     $studyPrograms = StudyProgram::where('is_active', true)->get();
-
-    // Ambil custom fields kategori registration
     $customFields = CustomField::where('category', 'registration')->orderBy('order')->get();
 
     return view('camaba.formulir.create', [
       'user' => $user,
       'customFields' => $customFields,
-      'studyPrograms' => $studyPrograms, // Tambahkan ini
-      'isLocked' => $isLocked
+      'studyPrograms' => $studyPrograms,
+      'isLocked' => $isLocked // Pastikan ini dikirim ke view
     ]);
   }
 
@@ -191,12 +189,8 @@ class FormController extends Controller
       // TWEAK: Pastikan relasi ke registration_period_id tersimpan di user
       // Ini penting untuk filter Statistik Admisi per Gelombang
       $user->registration_period_id = $activeWave->id;
+      $user->registration->update(['registration_period_id' => $activeWave->id]);
       $user->save();
-
-      // Opsional: Jika di tabel registrations juga ada registration_period_id, update juga
-      if ($user->registration) {
-        $user->registration->update(['registration_period_id' => $activeWave->id]);
-      }
     });
 
     return redirect()->route('formulir')->with('success', 'Konfirmasi pembayaran berhasil dikirim!');

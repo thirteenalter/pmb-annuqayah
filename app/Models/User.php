@@ -79,7 +79,7 @@ class User extends Authenticatable
 
   public function validity(): HasOne
   {
-    return $this->hasOne(Validity::class, 'user_id');
+    return $this->hasOne(Validity::class, 'user_id', 'id');
   }
 
   public function registrationPeriod()

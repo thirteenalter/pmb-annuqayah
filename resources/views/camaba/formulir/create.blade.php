@@ -1,10 +1,6 @@
 <x-app-layout>
     <x-subnavbarmaba />
 
-    @php
-        $user = $user ?? auth()->user();
-        $isLocked = $user->validity->is_data_valid == 1;
-    @endphp
 
     <div class="min-h-screen bg-slate-50 py-10 px-4">
         <div class="max-w-7xl mx-auto">
@@ -18,8 +14,8 @@
             @endif
 
 
-
             @if ($isLocked)
+                {{-- Tampilan saat data SUDAH TERKUNCI --}}
                 <div class="mb-8 flex gap-4 p-4 bg-indigo-50 border border-indigo-200 rounded-2xl">
                     <span class="material-symbols-outlined text-indigo-600">lock</span>
                     <div>
@@ -29,6 +25,7 @@
                     </div>
                 </div>
             @else
+                {{-- Tampilan saat data BELUM TERKUNCI --}}
                 <div class="mb-8 flex gap-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
                     <span class="material-symbols-outlined text-amber-600">info</span>
                     <p class="text-sm text-amber-800">
@@ -36,12 +33,14 @@
                         <strong>Ijazah</strong> terakhir.
                     </p>
                 </div>
-                @if ($user->identity?->birth_place && $user->identity?->nik && !$isLocked)
+
+                {{-- Notifikasi khusus jika sudah isi tapi belum diverifikasi (is_data_valid masih 0) --}}
+                @if ($user->identity?->birth_place && $user->identity?->nik)
                     <div
                         class="mb-4 p-4 bg-green-100 border border-green-200 text-green-700 rounded-2xl flex items-center gap-2">
                         <span class="material-symbols-outlined">check_circle</span>
-                        <span>Data identitas telah dilengkapi, Menunggu diverifikasi admin. (apabila berkas belum di
-                            verifikasi hingga 7 hari mendatang hubungi admin)</span>
+                        <span class="text-sm">Data identitas telah dilengkapi, menunggu verifikasi admin. (Hubungi admin
+                            jika berkas belum diverifikasi dalam 7 hari).</span>
                     </div>
                 @endif
             @endif

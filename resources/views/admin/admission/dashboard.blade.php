@@ -79,14 +79,35 @@
                                 <th class="pb-3 px-2 text-right">Jumlah Pendaftar</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @foreach ($periodStats as $period)
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="py-4 px-2 text-sm font-bold text-slate-700">{{ $period->name }}</td>
-                                    <td class="py-4 px-2 text-right font-black text-slate-900">
-                                        {{ $period->registrations_count }}</td>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse ($periodStats as $period)
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                                    <td class="py-4 px-2">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-bold text-slate-700 uppercase tracking-tight">
+                                                {{ $period->name }}
+                                            </span>
+                                            @if ($period->is_active)
+                                                <span
+                                                    class="text-[10px] text-green-500 font-black uppercase italic">Aktif</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-2 text-right">
+                                        <span
+                                            class="inline-flex items-center justify-center px-3 py-1 text-xs font-black text-slate-900 bg-slate-100 rounded-lg group-hover:bg-gray-800 group-hover:text-white transition-all">
+                                            {{ number_format($period->registrations_count, 0, ',', '.') }}
+                                            <span class="ml-1 text-[10px] font-medium opacity-70">Siswa</span>
+                                        </span>
+                                    </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="py-10 text-center text-sm text-slate-400 italic">
+                                        Belum ada data gelombang.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
