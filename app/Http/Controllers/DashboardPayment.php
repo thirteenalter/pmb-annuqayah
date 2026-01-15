@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RegistrationPeriod;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardPayment extends Controller
 {
@@ -12,9 +13,11 @@ class DashboardPayment extends Controller
   {
     $search = $request->input('search');
     $waveFilter = $request->input('wave_id');
+    $user = Auth::user()->load(['document', 'validity']);
 
     $waves = RegistrationPeriod::orderBy('start_date', 'desc')->get();
     $activeWave = RegistrationPeriod::where('is_active', true)->first();
+
 
     $allPayments = Payment::with(['user.validity'])
       ->when($search, function ($query) use ($search) {
@@ -33,7 +36,7 @@ class DashboardPayment extends Controller
       ->paginate(10)
       ->withQueryString();
 
-    return view('admin.pembayaran.index', compact('activeWave', 'allPayments', 'waves'));
+    return view('admin.pembayaran.index', compact('activeWave', 'allPayments', 'waves', 'user'));
   }
 
   public function updateStatus(Request $request, $id)

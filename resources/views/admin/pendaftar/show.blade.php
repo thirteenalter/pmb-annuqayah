@@ -53,14 +53,15 @@
                     <div
                         class="h-28 w-28 rounded-2xl bg-slate-100 mx-auto mb-4 border-4 border-white shadow-lg overflow-hidden">
                         @if ($user->document && $user->document->photo_formal)
-                            <img src="{{ asset('storage/' . $user->document->photo_formal) }}"
+                            <img src="{{ route('admin.documents.view', [$user->id, $user->document->photo_formal]) }}"
                                 class="h-full w-full object-cover">
                         @else
                             <div
                                 class="h-full w-full flex items-center justify-center text-slate-300 font-bold text-2xl uppercase">
-                                {{ substr($user->name, 0, 2) }}
+                                {{ Str::upper(Str::substr($user->name, 0, 2)) }}
                             </div>
                         @endif
+
                     </div>
                     <h3 class="text-lg font-bold text-slate-900 leading-tight">
                         {{ $user->identity?->full_name ?? $user->name }}</h3>
@@ -250,6 +251,11 @@
                                         'file' => $user->document?->report_scan,
                                         'type' => 'report_scan',
                                     ],
+                                    [
+                                        'label' => 'sertifikat',
+                                        'file' => $user->document?->achievement_certificate,
+                                        'type' => 'achievement_certificate',
+                                    ],
                                 ];
                             @endphp
 
@@ -279,7 +285,7 @@
                     <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                         <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest"> Pembayaran
                         </h4>
-                        <div class="flex gap-2">
+                        {{-- <div class="flex gap-2">
                             <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
                                 @csrf
                                 <button name="set_payment" value="valid"
@@ -290,7 +296,7 @@
                                 <button name="set_payment" value="invalid"
                                     class="px-3 py-1.5 rounded-lg text-[9px] font-black transition-all {{ !$user->validity?->is_payment_valid && $user->validity?->verified_at ? 'bg-rose-600 text-white' : 'bg-white text-rose-600 border border-rose-200' }}">TOLAK</button>
                             </form>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="p-6">
@@ -302,7 +308,7 @@
                                     {{ $user->payment?->account_name ?? 'Belum Upload' }}</p>
                             </div>
                             @if ($user->payment?->proof_file)
-                                <a href="{{ asset('storage/' . $user->payment->proof_file) }}" target="_blank"
+                                <a href="{{ route('admin.payments.view', $user->id) }}" target="_blank"
                                     class="px-4 py-2 bg-amber-600 text-white rounded-lg text-xs font-bold shadow-md">LIHAT
                                     BUKTI BAYAR</a>
                             @endif

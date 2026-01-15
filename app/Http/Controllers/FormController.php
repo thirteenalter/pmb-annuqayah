@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\RegistrationPeriod;
 use App\Models\CustomField; // Tambahkan ini
 use App\Models\CustomFieldValue; // Tambahkan ini
+use App\Models\Payment;
 use Illuminate\Support\Facades\Storage;
 use App\Models\StudyProgram;
 use Illuminate\Support\Str;
@@ -322,7 +323,6 @@ class FormController extends Controller
 
   public function viewAdminCustomFile(User $user, string $fieldId)
   {
-    // Pastikan hanya admin yang bisa akses
     abort_unless(Auth::user()->isAdmin(), 403);
 
     $customValue = CustomFieldValue::where('user_id', $user->id)
@@ -335,6 +335,9 @@ class FormController extends Controller
 
     return $this->serveDocument($customValue->value, true);
   }
+
+
+
   private function serveDocument(string $path, bool $isAdmin = false)
   {
     if (!Storage::disk('local')->exists($path)) {
@@ -345,7 +348,6 @@ class FormController extends Controller
       Storage::disk('local')->path($path)
     );
   }
-
 
 
 
@@ -368,18 +370,36 @@ class FormController extends Controller
         ['user_id' => $user->id],
         [
           'account_name' => $request->account_name,
-          'proof_file'   => $request->file('proof_file')->store('payments', 'public'),
+          // SIMPAN KE DISK 'local' (Private)
+          'proof_file'   => $request->file('proof_file')->store('document', 'local'),
           'status'       => 'pending',
         ]
       );
 
-      // TWEAK: Pastikan relasi ke registration_period_id tersimpan di user
-      // Ini penting untuk filter Statistik Admisi per Gelombang
       $user->registration_period_id = $activeWave->id;
       $user->registration->update(['registration_period_id' => $activeWave->id]);
       $user->save();
     });
 
     return redirect()->route('formulir')->with('success', 'Konfirmasi pembayaran berhasil dikirim!');
+  }
+
+  public function viewPayment($userId)
+  {
+    // 1. Pastikan yang mengakses adalah Admin (Gunakan middleware atau cek manual)
+    if (!auth()->user()->isAdmin() && auth()->id() !== (int)$userId) {
+      abort(403, 'Anda tidak memiliki akses ke dokumen ini.');
+    }
+
+    // 2. Ambil data pembayaran
+    $payment = Payment::where('user_id', $userId)->firstOrFail();
+
+    // 3. Cek apakah file ada di storage local
+    if (!Storage::disk('local')->exists($payment->proof_file)) {
+      abort(404, 'File tidak ditemukan.');
+    }
+
+
+    return response()->file(storage_path('app/private/' . $payment->proof_file));
   }
 }

@@ -118,6 +118,8 @@ Route::middleware(['auth', 'verified', 'admin'])
       [FormController::class, 'viewAdminDocument']
     )->name('documents.view');
 
+    Route::get('/payments/view/{userId}', [FormController::class, 'viewPayment'])->name('payments.view');
+
     Route::get('/admin/user/{user}/custom/{fieldId}', [FormController::class, 'viewAdminCustomFile'])->name('custom.view');
 
 
