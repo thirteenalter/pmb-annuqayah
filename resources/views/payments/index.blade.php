@@ -26,7 +26,7 @@
     <div class="min-h-screen bg-slate-50 py-12 px-4 no-print">
         <div class="max-w-7xl mx-auto">
 
-            <div class="text-center mb-10">
+            {{-- <div class="text-center mb-10">
                 <h1 class="text-3xl font-black text-slate-900 tracking-tight">Status Pendaftaran</h1>
                 <p class="text-slate-500 mt-2">Berikut adalah progres verifikasi akun Anda.</p>
             </div>
@@ -62,7 +62,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </div> --}}
 
             <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden max-w-3xl mx-auto">
 

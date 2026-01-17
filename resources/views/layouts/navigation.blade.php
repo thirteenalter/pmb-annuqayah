@@ -42,11 +42,13 @@
                     </a>
                 @endif
 
-                {{-- <a href="/settings"
-                    class="flex items-center gap-1 text-sm text-slate-600 font-semibold hover:text-indigo-600 transition">
-                    <span class="material-symbols-outlined" style="font-size: 18px;">settings</span>
-                    Pengaturan
-                </a> --}}
+                @if (Auth::user()->isAdmin())
+                    <a href="{{ route('admin.settings.index') }}"
+                        class="flex items-center gap-1 text-sm text-slate-600 font-semibold hover:text-indigo-600 transition">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">settings</span>
+                        Pengaturan
+                    </a>
+                @endif
             </div>
         </div>
 

@@ -85,7 +85,7 @@ class UserDashboard extends Controller
           $validity->is_data_valid = true;
           $validity->is_payment_valid = true;
         }
-      }
+      }payment
 
       // 4. Catatan Admin
       if ($request->has('admin_note')) {

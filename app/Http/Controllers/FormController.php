@@ -386,15 +386,12 @@ class FormController extends Controller
 
   public function viewPayment($userId)
   {
-    // 1. Pastikan yang mengakses adalah Admin (Gunakan middleware atau cek manual)
     if (!auth()->user()->isAdmin() && auth()->id() !== (int)$userId) {
       abort(403, 'Anda tidak memiliki akses ke dokumen ini.');
     }
 
-    // 2. Ambil data pembayaran
     $payment = Payment::where('user_id', $userId)->firstOrFail();
 
-    // 3. Cek apakah file ada di storage local
     if (!Storage::disk('local')->exists($payment->proof_file)) {
       abort(404, 'File tidak ditemukan.');
     }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\ExamQuestionController;
 use App\Http\Controllers\Admin\AdmissionController;
 use App\Http\Controllers\Admin\CustomFieldController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\Validators;
 use App\Http\Controllers\DashboardPayment;
 use App\Http\Controllers\ProfileController;
@@ -12,7 +13,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\UserDashboard;
 use Illuminate\Support\Facades\Auth;
 use App\Models\RegistrationPeriod;
-
+use App\Models\Settings;
 
 Route::get('/', function () {
   return view('welcome');
@@ -65,7 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
   // routes/web.php
   Route::get('/formulir/pembayaran', function () {
     $user = Auth::user();
-
+    $setting = Settings::select("rekening", "nama_rekening", "nama_bank")->first();
     // Ambil data hanya berdasarkan status aktif (abaikan filter jam dulu)
     $activeWave = RegistrationPeriod::where('is_active', true)->first();
 
@@ -74,6 +75,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
       'user' => $user,
       'payment' => $user?->payment,
       'validity' => $user?->validity,
+      'rekening' => $setting->rekening,
+      'atas_nama' => $setting->nama_rekening,
+      'bank' => $setting->nama_bank,
     ]);
   })->middleware(['auth', 'verified'])->name('formulir.pembayaran');
 
@@ -181,6 +185,8 @@ Route::middleware(['auth', 'verified', 'admin'])
       // Route untuk mengatur urutan (optional)
       Route::post('/reorder', [CustomFieldController::class, 'reorder'])->name('reorder');
     });
+
+    Route::resource("/settings", SettingsController::class)->names("settings")->only("index", "edit", "store");
   });
 
 Route::middleware('auth')->group(function () {
