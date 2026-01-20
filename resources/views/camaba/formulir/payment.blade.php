@@ -82,17 +82,18 @@
                                         <div class="flex items-center gap-4">
                                             <div
                                                 class="w-14 h-9 bg-white rounded border border-slate-200 flex items-center justify-center font-bold text-xs text-blue-600">
-                                                {{ strtoupper($bank) }}</div>
+                                                {{ strtoupper($bank ?? '-') }}</div>
                                             <div>
                                                 <p class="text-[10px] text-slate-400 uppercase font-bold">Nomor Rekening
                                                 </p>
                                                 <p class="font-mono font-bold text-slate-900 text-lg">
-                                                    {{ $rekening }}</p>
+                                                    {{ $rekening ?? 'Belum diatur' }}</p>
                                             </div>
                                         </div>
                                         <div class="text-right">
                                             <p class="text-[10px] text-slate-400 uppercase font-bold">Atas Nama</p>
-                                            <p class="font-bold text-slate-800 text-sm italic">{{ $atas_nama }}</p>
+                                            <p class="font-bold text-slate-800 text-sm italic"> {{ $atas_nama ?? '-' }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
