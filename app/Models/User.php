@@ -52,6 +52,8 @@ class User extends Authenticatable
     ];
   }
 
+
+
   public function isAdmin(): bool
   {
     return ($this->role ?? null) === 'admin';
@@ -90,5 +92,31 @@ class User extends Authenticatable
   public function customFieldValues()
   {
     return $this->hasMany(CustomFieldValue::class);
+  }
+
+
+  public function isDataLengkap()
+  {
+    $identity = $this->identity;
+    if (!$identity || !$identity->nik || !$identity->full_name || !$identity->birth_date) {
+      return false;
+    }
+
+    $profile = $this->registration?->studentProfile;
+    if (!$profile || !$profile->nisn || !$profile->religion) {
+      return false;
+    }
+
+    $details = $this->registration?->studentDetails;
+    if (!$details || !$details->email || !$details->hp || !$details->kecamatan || !$details->kelurahan) {
+      return false;
+    }
+
+    $family = $this->registration?->studentFamily;
+    if (!$family || !$family->nama_ayah || !$family->nama_ibu || !$family->pekerjaan_ayah) {
+      return false;
+    }
+
+    return true;
   }
 }

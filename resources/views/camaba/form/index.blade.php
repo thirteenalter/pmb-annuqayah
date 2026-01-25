@@ -34,12 +34,29 @@
                 </div>
 
                 {{-- Notifikasi khusus jika sudah isi tapi belum diverifikasi (is_data_valid masih 0) --}}
-                @if ($user->identity?->birth_place && $user->identity?->nik)
-                    <div
-                        class="mb-4 p-4 bg-green-100 border border-green-200 text-green-700 rounded-2xl flex items-center gap-2">
-                        <span class="material-symbols-outlined">check_circle</span>
-                        <span class="text-sm">Data dokumen telah dilengkapi, menunggu verifikasi admin. (Hubungi admin
-                            jika berkas belum diverifikasi dalam 7 hari).</span>
+                @if ($user->isDataLengkap())
+                    <div class="mb-6 p-5 bg-emerald-50 border border-emerald-200 rounded-3xl flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-100 shrink-0">
+                            <span class="material-symbols-outlined text-gray-600">verified</span>
+                        </div>
+                        <div>
+                            <h4 class="text-emerald-900 font-bold">Data Berhasil Dilengkapi</h4>
+                            <p class="text-emerald-700 text-sm">Terima kasih! Seluruh formulir pendaftaran telah terisi
+                                dengan benar. Mohon tunggu proses verifikasi admin.</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="mb-6 p-5 bg-amber-50 border border-amber-200 rounded-3xl flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-100 shrink-0">
+                            <span class="material-symbols-outlined text-gray-600">pending</span>
+                        </div>
+                        <div>
+                            <h4 class="text-amber-900 font-bold">Data Belum Lengkap</h4>
+                            <p class="text-amber-700 text-sm">Silakan lengkapi seluruh tab formulir (Alamat, Ortu, dan
+                                Kebutuhan Khusus) sebelum mengirim data.</p>
+                        </div>
                     </div>
                 @endif
             @endif
@@ -59,7 +76,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('form.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+            <form action="{{ route('student.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
 
                 <div
@@ -80,13 +97,7 @@
                                 class="w-full px-4 py-3 rounded-xl border-slate-200 transition-all {{ $isLocked ? 'bg-slate-50 text-slate-500' : 'focus:border-indigo-500 focus:ring-indigo-500' }}">
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">NIK (Sesuai KTP)</label>
-                            <input type="number" name="nik_identity"
-                                value="{{ old('nik_identity', $user->identity->nik ?? ($user->nik ?? '')) }}"
-                                {{ $isLocked ? 'readonly' : '' }}
-                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50 text-slate-500' : '' }}">
-                        </div>
+
 
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Tempat Lahir</label>
@@ -119,6 +130,27 @@
                                     Perempuan</option>
                             </select>
                         </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Agama</label>
+                            <select name="religion" {{ $isLocked ? 'disabled' : '' }}
+                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
+                                <option value="">Pilih Agama</option>
+                                @foreach (['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha'] as $agm)
+                                    <option value="{{ $agm }}"
+                                        {{ old('religion', $user->registration->studentProfile->religion ?? '') == $agm ? 'selected' : '' }}>
+                                        {{ $agm }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            {{-- Hidden input jika locked agar data tetap terkirim --}}
+                            @if ($isLocked)
+                                <input type="hidden" name="religion"
+                                    value="{{ $user->registration->studentProfile->religion ?? '' }}">
+                            @endif
+                        </div>
+
 
                         <div class="hidden">
                             <label class="block text-sm font-semibold text-slate-700 mb-2 ">Nama Ibu</label>
@@ -203,82 +235,75 @@
                     </div>
                 </div>
 
-                {{-- informasi detail --}}
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-6 border-b border-slate-100 bg-slate-50/50">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-indigo-500">school</span>
-                            Detail Mahasiswa
-                        </h2>
+
+                <div x-data="{ tab: 'alamat' }">
+                    <div class="mb-6">
+                        {{-- Container: Menggunakan w-full agar selebar layar, dan flex untuk membagi area --}}
+                        <div
+                            class="flex items-center gap-1 bg-slate-100/50 p-1 rounded-2xl border border-slate-200 w-full md:w-fit">
+
+                            <button type="button" @click="tab = 'alamat'"
+                                :class="tab === 'alamat'
+                                    ?
+                                    'bg-white text-sky-600 shadow-sm ring-1 ring-slate-200' :
+                                    'text-slate-500 hover:text-slate-700'"
+                                class="flex flex-1 md:flex-none items-center justify-center gap-1.5 px-2 md:px-5 py-2.5 rounded-xl text-[10px] md:text-xs font-bold transition-all duration-300">
+                                <span class="material-symbols-outlined text-[16px] md:text-[18px]"
+                                    :class="tab === 'alamat' ? 'text-sky-500' : 'text-slate-400'">location_on</span>
+                                <span class="truncate">ALAMAT</span>
+                            </button>
+
+                            <button type="button" @click="tab = 'ortu'"
+                                :class="tab === 'ortu'
+                                    ?
+                                    'bg-white text-sky-600 shadow-sm ring-1 ring-slate-200' :
+                                    'text-slate-500 hover:text-slate-700'"
+                                class="flex flex-1 md:flex-none items-center justify-center gap-1.5 px-2 md:px-5 py-2.5 rounded-xl text-[10px] md:text-xs font-bold transition-all duration-300">
+                                <span class="material-symbols-outlined text-[16px] md:text-[18px]"
+                                    :class="tab === 'ortu' ? 'text-sky-500' : 'text-slate-400'">family_restroom</span>
+                                <span class="truncate">ORTU</span>
+                            </button>
+
+                            <button type="button" @click="tab = 'khusus'"
+                                :class="tab === 'khusus'
+                                    ?
+                                    'bg-white text-sky-600 shadow-sm ring-1 ring-slate-200' :
+                                    'text-slate-500 hover:text-slate-700'"
+                                class="flex flex-1 md:flex-none items-center justify-center gap-1.5 px-2 md:px-5 py-2.5 rounded-xl text-[10px] md:text-xs font-bold transition-all duration-300">
+                                <span class="material-symbols-outlined text-[16px] md:text-[18px]"
+                                    :class="tab === 'khusus' ? 'text-sky-500' : 'text-slate-400'">accessible</span>
+                                <span class="truncate">KHUSUS</span>
+                            </button>
+
+                        </div>
                     </div>
-                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Jalur Pendaftaran</label>
-                            <select name="entry_path" {{ $isLocked ? 'disabled' : '' }}
-                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
-                                <option value="">Pilih Jalur Masuk</option>
-                                <option value="SNBP"
-                                    {{ old('entry_path', $user->registration->entry_path ?? '') == 'SNBP' ? 'selected' : '' }}>
-                                    SNBP (Prestasi)</option>
-                                <option value="SNBT"
-                                    {{ old('entry_path', $user->registration->entry_path ?? '') == 'SNBT' ? 'selected' : '' }}>
-                                    SNBT (Tes Tulis)</option>
-                                <option value="MANDIRI"
-                                    {{ old('entry_path', $user->registration->entry_path ?? '') == 'MANDIRI' ? 'selected' : '' }}>
-                                    Mandiri</option>
-                            </select>
-                        </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor Peserta (Jika
-                                Ada)</label>
-                            <input type="text" name="participant_number"
-                                value="{{ old('participant_number', $user->registration->participant_number ?? '') }}"
-                                {{ $isLocked ? 'readonly' : '' }}
-                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
-                        </div>
+                    <style>
+                        /* Menghilangkan scrollbar tapi tetap bisa di-scroll */
+                        .no-scrollbar::-webkit-scrollbar {
+                            display: none;
+                        }
 
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Sekolah Asal
-                                (SMA/SMK/MA)</label>
-                            <input type="text" name="school_origin"
-                                value="{{ old('school_origin', $user->registration->school_origin ?? '') }}"
-                                {{ $isLocked ? 'readonly' : '' }}
-                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
-                        </div>
+                        .no-scrollbar {
+                            -ms-overflow-style: none;
+                            scrollbar-width: none;
+                        }
+                    </style>
 
+                    {{-- Konten Tab --}}
+                    <div x-show="tab === 'alamat'" x-transition>
+                        @include('camaba.form.components.detail')
+                    </div>
 
+                    <div x-show="tab === 'ortu'" x-transition>
+                        @include('camaba.form.components.parents')
+                    </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Tahun Lulus</label>
-                            <input type="number" name="graduation_year"
-                                value="{{ old('graduation_year', $user->registration->graduation_year ?? '') }}"
-                                {{ $isLocked ? 'readonly' : '' }}
-                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : '' }}">
-                        </div>
+                    <div x-show="tab === 'khusus'" x-transition>
+                        @include('camaba.form.components.khusus')
 
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Pilihan Program
-                                Studi</label>
-                            <select name="study_program" {{ $isLocked ? 'disabled' : '' }}
-                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : 'focus:border-indigo-500 focus:ring-indigo-500' }}">
-                                <option value="">Pilih Jurusan</option>
-
-                                @foreach ($studyPrograms as $program)
-                                    <option value="{{ $program->id }}"
-                                        {{ old('study_program', $user->registration->study_program_id ?? '') == $program->id ? 'selected' : '' }}>
-                                        {{ $program->name }} ({{ $program->faculty }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('study_program')
-                                <p class="text-rose-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
                     </div>
                 </div>
-
-
 
                 @if (isset($customFields) && $customFields->count() > 0)
                     <div

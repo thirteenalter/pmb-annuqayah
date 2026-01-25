@@ -53,6 +53,9 @@ Route::get('/cek-pembayaran', function () {
 })->middleware(['auth', 'verified'])->name('pembayaran.status');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+  require __DIR__ . '/student.php';
+
+
   Route::get('/formulir', function () {
     return view('camaba.formulir.index');
   })->name('formulir');

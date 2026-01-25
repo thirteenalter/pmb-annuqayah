@@ -21,7 +21,6 @@ class FormController extends Controller
   {
     $user = Auth::user()->load(['identity', 'registration', 'validity']);
 
-    // Cek: ada data validity DAN (is_data_valid bernilai 1 ATAU final_status-nya valid)
     $isLocked = $user->validity && (
       $user->validity->is_data_valid == 1
     );
