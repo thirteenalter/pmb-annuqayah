@@ -135,7 +135,7 @@
                                     class="text-sm font-bold {{ $user->validity?->final_status === 'valid' ? 'text-slate-800' : 'text-slate-400' }}">
                                     Cetak Kartu Ujian</h4>
                                 @if ($user->validity?->final_status === 'valid')
-                                    <a href="{{ route('exams.index') }}">
+                                    <a href="{{ route('pembayaran.status') }}">
                                         <button
                                             class="mt-2 px-4 py-1.5 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700">Cetak
                                             Sekarang</button>

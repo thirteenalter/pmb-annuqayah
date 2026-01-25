@@ -207,7 +207,7 @@
 
 
 
-                        <div>
+                        <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Tahun Lulus</label>
                             <input type="number" name="graduation_year"
                                 value="{{ old('graduation_year', $user->registration->graduation_year ?? '') }}"
@@ -217,6 +217,24 @@
 
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Pilihan Program Studi</label>
+                            <select name="study_program" {{ $isLocked ? 'disabled' : '' }}
+                                class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : 'focus:border-indigo-500 focus:ring-indigo-500' }}">
+                                <option value="">Pilih Jurusan</option>
+
+                                @foreach ($studyPrograms as $program)
+                                    <option value="{{ $program->id }}"
+                                        {{ old('study_program', $user->registration->study_program_id ?? '') == $program->id ? 'selected' : '' }}>
+                                        {{ $program->name }} ({{ $program->faculty }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('study_program')
+                                <p class="text-rose-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Pilihan Program Studi
+                                2</label>
                             <select name="study_program" {{ $isLocked ? 'disabled' : '' }}
                                 class="w-full px-4 py-3 rounded-xl border-slate-200 {{ $isLocked ? 'bg-slate-50' : 'focus:border-indigo-500 focus:ring-indigo-500' }}">
                                 <option value="">Pilih Jurusan</option>

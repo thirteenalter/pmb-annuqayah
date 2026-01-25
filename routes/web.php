@@ -69,8 +69,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
   // routes/web.php
   Route::get('/formulir/pembayaran', function () {
     $user = Auth::user();
+
+    if ($user->isDataLengkap() == false) {
+      return redirect()->route('isi-dokumen')->with('error', 'Silakan lengkapi data dan unggah dokumen terlebih dahulu sebelum melakukan pembayaran.');
+    }
+
     $setting = Settings::select("rekening", "nama_rekening", "nama_bank")->first();
-    // Ambil data hanya berdasarkan status aktif (abaikan filter jam dulu)
     $activeWave = RegistrationPeriod::where('is_active', true)->first();
 
     return view('camaba.formulir.payment', [

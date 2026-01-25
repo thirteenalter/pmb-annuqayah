@@ -150,32 +150,32 @@ class StudentFormController extends Controller
   {
     $user = Auth::user();
 
-    // $request->validate([
-    //   // Identity & Registration
-    //   'full_name'   => 'required|string|max:255',
-    //   'nik_identity' => 'required|digits:16',
-    //   'birth_place' => 'required|string',
-    //   'birth_date'  => 'required|date',
-    //   'gender'      => 'required|in:L,P',
-    //   'entry_path'  => 'required',
-    //   'study_program' => 'required',
+    $request->validate([
+      // Identity & Registration
+      'full_name'   => 'required|string|max:255',
+      'nik_identity' => 'required|digits:16',
+      'birth_place' => 'required|string',
+      'birth_date'  => 'required|date',
+      'gender'      => 'required|in:L,P',
+      'entry_path'  => 'required',
+      'study_program' => 'required',
 
-    //   'kewarganegaraan' => 'required|string',
-    //   'nisn'            => 'required|digits:10',
-    //   'hp'              => 'required|numeric',
-    //   'email'           => 'required|email',
-    //   'kelurahan'       => 'required',
-    //   'kecamatan'       => 'required',
+      'kewarganegaraan' => 'required|string',
+      'nisn'            => 'required|digits:10',
+      'hp'              => 'required|numeric',
+      'email'           => 'required|email',
+      'kelurahan'       => 'required',
+      'kecamatan'       => 'required',
 
-    //   'nama_ayah'       => 'required|string',
-    //   'nama_ibu'        => 'required|string',
-    //   'nik_ayah'        => 'nullable|digits:16',
-    //   'nik_ibu'         => 'nullable|digits:16',
-    // ], [
-    //   'nik_identity.digits' => 'NIK Mahasiswa harus 16 digit.',
-    //   'nisn.digits'         => 'NISN harus berjumlah 10 digit.',
-    //   'hp.required'         => 'Nomor HP wajib diisi.',
-    // ]);
+      'nama_ayah'       => 'required|string',
+      'nama_ibu'        => 'required|string',
+      'nik_ayah'        => 'nullable|digits:16',
+      'nik_ibu'         => 'nullable|digits:16',
+    ], [
+      'nik_identity.digits' => 'NIK Mahasiswa harus 16 digit.',
+      'nisn.digits'         => 'NISN harus berjumlah 10 digit.',
+      'hp.required'         => 'Nomor HP wajib diisi.',
+    ]);
 
     DB::transaction(function () use ($request, $user) {
       // A. Update Identity
