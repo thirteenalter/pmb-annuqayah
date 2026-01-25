@@ -6,7 +6,7 @@ Sistem Informasi **Penerimaan Mahasiswa Baru (PMB)** Universitas Annuqayah adala
 
 ## ⚖️ Hak Cipta dan Ketentuan Penggunaan
 
-Copyright © 2024 Ridho Alfahresi. Semua Hak Dilindungi Undang-Undang.
+Copyright © 2025 Ridho Alfahresi. Semua Hak Dilindungi Undang-Undang.
 
 Source code ini dipublikasikan **hanya sebagai portofolio**. Tidak diizinkan bagi siapa pun untuk menyalin, mendistribusikan, atau menggunakan kode ini untuk kepentingan komersial, pribadi, maupun instansi (termasuk Universitas Annuqayah) tanpa izin tertulis dan penyelesaian administrasi yang sah dari pemilik kode.
 
