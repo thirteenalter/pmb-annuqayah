@@ -8,6 +8,11 @@
                     <p class="text-sm text-slate-500">Melihat laporan, dan mencetak format excel untuk camaba</p>
                 </div>
 
+                <a href="{{ route('admin.report.master') }}"
+                    class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-200 active:scale-95">
+                    <span class="material-symbols-outlined">database</span>
+                    Download Master Data (Semua Relasi)
+                </a>
                 {{-- Filter Jadwal --}}
                 {{-- <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-2">
                     <select class="border-none focus:ring-0 text-sm font-medium text-slate-700 bg-transparent pr-8">
@@ -19,6 +24,7 @@
                     </button>
                 </div> --}}
             </div>
+
 
             <div class="mt-8 grid grid-cols-1 gap-4">
                 {{-- Header Status --}}
@@ -73,7 +79,7 @@
                         ],
                     ];
                 @endphp
-                
+
                 @foreach ($reports as $report)
                     <div
                         class="group flex items-center justify-between p-5 bg-white border-gray-300 hover:bg-white border  hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 rounded-2xl transition-all duration-300">

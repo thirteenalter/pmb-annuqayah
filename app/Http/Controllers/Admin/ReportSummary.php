@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Exports\CalonMahasiswaExport;
+use App\Exports\MasterCalonMahasiswaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -29,6 +30,11 @@ class ReportSummary extends Controller
     $fileName = "laporan-camaba-{$type}-" . now()->format('Y-m-d') . ".xlsx";
 
     return Excel::download(new CalonMahasiswaExport($type, $periodId), $fileName);
+  }
+
+  public function exportMaster()
+  {
+    return Excel::download(new MasterCalonMahasiswaExport, 'MASTER-DATA-CAMABA-' . now()->format('d-m-Y') . '.xlsx');
   }
 
   /**
