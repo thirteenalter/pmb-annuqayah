@@ -13,11 +13,12 @@ class SettingsController extends Controller
    */
   public function index()
   {
-    $rekening = Settings::select('rekening', 'nama_rekening', 'nama_bank')->first()
+    $rekening = Settings::select('rekening', 'nama_rekening', 'nama_bank', 'nowa')->first()
       ?? (object) [
         'rekening' => null,
         'nama_bank' => null,
         'nama_rekening' => null,
+        'nowa' => null,
       ];
 
     return view('admin.settings.index', compact('rekening'));
@@ -39,6 +40,7 @@ class SettingsController extends Controller
       'rekening'      => 'nullable|string',
       'nama_bank'     => 'nullable|string',
       'nama_rekening' => 'nullable|string',
+      'nowa'          => 'nullable|string',
     ]);
 
     Settings::updateOrCreate(
@@ -47,6 +49,7 @@ class SettingsController extends Controller
         'rekening'      => $request->rekening,
         'nama_bank'     => $request->nama_bank,
         'nama_rekening' => $request->nama_rekening,
+        'nowa'          => $request->nowa,
       ]
     );
 

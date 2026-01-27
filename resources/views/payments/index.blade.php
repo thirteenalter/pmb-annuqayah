@@ -157,6 +157,9 @@
             </div>
 
             {{-- Helpdesk Card --}}
+            @php
+                $settings = \App\Models\Settings::first();
+            @endphp
             <div
                 class="mt-8 p-6 bg-white/60 backdrop-blur-md rounded-[2rem] border border-white flex items-center justify-between no-print shadow-sm">
                 <div class="flex items-center gap-5">
@@ -167,10 +170,10 @@
                     <div>
                         <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight">Butuh Bantuan?</h4>
                         <p class="text-xs text-slate-500">Chat WhatsApp Helpdesk PMB: <span
-                                class="font-bold text-indigo-600 font-mono">0812-3456-7890</span></p>
+                                class="font-bold text-indigo-600 font-mono">{{ $settings->nowa }}</span></p>
                     </div>
                 </div>
-                <a href="https://wa.me/6281234567890" target="_blank"
+                <a href="https://wa.me/{{ $settings->nowa }}" target="_blank"
                     class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all group">
                     <span
                         class="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">chevron_right</span>
@@ -237,7 +240,8 @@
                                 </tr>
                                 <tr>
                                     <td style="padding: 10px 0; color: #64748b;">ID Pendaftaran (User)</td>
-                                    <td style="padding: 10px 0; font-weight: 800; color: #1e293b;">: {{ $user->id }}
+                                    <td style="padding: 10px 0; font-weight: 800; color: #1e293b;">:
+                                        {{ $user->id }}
                                     </td>
                                 </tr>
                                 <tr>

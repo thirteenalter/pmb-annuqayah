@@ -125,7 +125,10 @@
                             sistem.</p>
                     </div>
                 </div>
-                <a href="https://wa.me/your-number"
+                @php
+                    $settings = \App\Models\Settings::first();
+                @endphp
+                <a href="https://wa.me/{{ $settings->nowa }}"
                     class="w-full md:w-auto px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all text-center">
                     WhatsApp Admin
                 </a>

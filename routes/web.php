@@ -56,9 +56,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
   require __DIR__ . '/student.php';
 
 
-  Route::get('/formulir', function () {
-    return view('camaba.formulir.index');
-  })->name('formulir');
+  Route::get('/formulir', [FormController::class, 'index'])->name('formulir');
+  Route::post('/formulir/pilih-gelombang', [FormController::class, 'pilihGelombang'])->name('formulir.pilih-gelombang');
 
 
 

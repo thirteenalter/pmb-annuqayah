@@ -53,6 +53,30 @@ class FormController extends Controller
     ]);
   }
 
+  public function index()
+  {
+    $user = auth()->user();
+
+    $selectedPeriodId = $user->registration_period_id;
+
+    $periods = RegistrationPeriod::where('is_active', true)->get();
+
+    return view('camaba.formulir.index', compact('periods', 'selectedPeriodId'));
+  }
+
+  public function pilihGelombang(Request $request)
+  {
+    $request->validate([
+      'registration_period_id' => 'required|exists:registration_periods,id',
+    ]);
+
+    $user = auth()->user();
+    $user->registration_period_id = $request->registration_period_id;
+    $user->save();
+
+    return redirect()->route('student.index')->with('success', 'Gelombang pendaftaran berhasil dipilih.');
+  }
+
   private function saveCustomFields(Request $request, $category)
   {
     // 1. Ambil field yang relevan
