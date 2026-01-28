@@ -133,18 +133,20 @@
                         </div>
                     </div>
                 </div>
-
+                @php
+                    $settings = \App\Models\Settings::first();
+                @endphp
                 <div
                     class="bg-slate-50/80 border-t border-slate-100 p-6 text-center text-slate-500 text-xs font-semibold">
-                    Butuh bantuan teknis? <a href="#"
+                    Butuh bantuan teknis? <a href="https://wa.me/{{ $settings->nowa }}"
                         class="text-indigo-600 hover:text-indigo-800 underline decoration-2 underline-offset-4">Hubungi
                         Tim Admisi</a>
                 </div>
             </div>
 
-            {{-- Info Cards --}}
+            {{-- Info Cards
             <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-                @foreach ([['icon' => 'verified_user', 'title' => 'Data Aman', 'desc' => 'Enkripsi data standar bank.'], ['icon' => 'history_edu', 'title' => 'Auto Save', 'desc' => 'Data tersimpan otomatis.'], ['icon' => 'speed', 'title' => 'Cepat', 'desc' => 'Proses verifikasi < 24 jam.']] as $info)
+                @foreach ([['icon' => 'verified_user', 'title' => 'Data Aman', 'desc' => 'Berda.'], ['icon' => 'history_edu', 'title' => 'Auto Save', 'desc' => 'Data tersimpan otomatis.'], ['icon' => 'speed', 'title' => 'Cepat', 'desc' => 'Proses verifikasi < 24 jam.']] as $info)
                     <div class="flex flex-col items-center text-center px-4 group">
                         <span
                             class="material-symbols-outlined text-slate-300 group-hover:text-indigo-400 transition-colors mb-3 text-3xl">{{ $info['icon'] }}</span>
@@ -152,7 +154,7 @@
                         <p class="text-xs text-slate-400 mt-1 leading-relaxed">{{ $info['desc'] }}</p>
                     </div>
                 @endforeach
-            </div>
+            </div> --}}
         </form>
     </div>
 </x-app-layout>

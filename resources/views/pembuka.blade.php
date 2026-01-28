@@ -73,7 +73,7 @@
                             <div class="flex flex-col items-center text-center group">
                                 <div
                                     class="w-20 h-20 bg-white border-[6px] border-slate-50 flex items-center justify-center rounded-full shadow-lg text-indigo-600 font-black text-2xl mb-6 group-hover:scale-110 group-hover:border-indigo-100 transition-all duration-300">
-                                    01
+                                    02
                                 </div>
                                 <h4 class="font-bold text-slate-900 mb-2 tracking-tight">Isi Formulir</h4>
                                 <p class="text-xs text-slate-500 leading-relaxed px-2">Lengkapi data diri dan unggah
@@ -86,7 +86,7 @@
                             <div class="flex flex-col items-center text-center group">
                                 <div
                                     class="w-20 h-20 bg-white border-[6px] border-slate-50 flex items-center justify-center rounded-full shadow-lg text-indigo-600 font-black text-2xl mb-6 group-hover:scale-110 group-hover:border-indigo-100 transition-all duration-300">
-                                    02
+                                    03
                                 </div>
                                 <h4 class="font-bold text-slate-900 mb-2 tracking-tight">Keuangan</h4>
                                 <p class="text-xs text-slate-500 leading-relaxed px-2">Pembayaran tagihan pendaftaran
