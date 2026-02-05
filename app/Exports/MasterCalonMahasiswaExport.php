@@ -63,7 +63,7 @@ class MasterCalonMahasiswaExport implements FromQuery, WithHeadings, WithMapping
       $reg->studentProfile->religion ?? '-',
       $reg->studentDetails->jalan ?? '-',
       $reg->studentDetails->kecamatan ?? '-',
-      $reg->studentDetails->kabupaten ?? '-',
+      $reg->studentDetails->kabupaten_kota ?? '-',
       $reg->studentFamily->nama_ayah ?? '-',
       $reg->studentFamily->pekerjaan_ayah ?? '-',
       $reg->studentFamily->nama_ibu ?? '-',

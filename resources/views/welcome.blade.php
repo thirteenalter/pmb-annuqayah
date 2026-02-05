@@ -122,15 +122,20 @@
                             @endphp
                             <div class="grid grid-cols-2 gap-4 h-3/4">
                                 <div class="overflow-hidden rounded-[2rem] shadow-sm border border-white/50">
-                                    <img class="w-full h-full object-cover transform hover:scale-110 transition duration-700"
-                                        alt="Kampus" src="{{ asset('storage/' . $settings->thumb1) }}">
+                                    @if ($settings?->thumb1)
+                                        <img class="w-full h-full object-cover transform hover:scale-110 transition duration-700"
+                                            alt="Kampus"
+                                            src="{{ route('image.settings', ['filename' => $settings->thumb1]) }}">
+                                    @endif
                                 </div>
 
                                 <div class="flex flex-col gap-4">
                                     <div class="h-1/2 overflow-hidden rounded-[2rem] shadow-sm border border-white/50">
-                                        <img src="{{ asset('storage/' . $settings->thumb2) }}"
-                                            class="w-full h-full object-cover transform hover:scale-110 transition duration-700"
-                                            alt="Kegiatan">
+                                        @if ($settings?->thumb2)
+                                            <img src="{{ route('image.settings', ['filename' => $settings->thumb2]) }}"
+                                                class="w-full h-full object-cover transform hover:scale-110 transition duration-700"
+                                                alt="Kegiatan">
+                                        @endif
                                     </div>
                                     <div
                                         class="h-1/2 bg-slate-100/50 rounded-[2rem] p-6 flex flex-col justify-center border border-white/50">

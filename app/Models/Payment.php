@@ -13,6 +13,10 @@ class Payment extends Model
     'status'
   ];
 
+  protected $attributes = [
+    'account_name' => 'Pemilik Akun Default',
+  ];
+
 
   public function user()
   {

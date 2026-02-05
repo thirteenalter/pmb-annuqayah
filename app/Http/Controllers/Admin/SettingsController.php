@@ -12,6 +12,15 @@ class SettingsController extends Controller
   /**
    * Display a listing of the resource.
    */
+
+  public function showSettingsPublicImage($filename)
+  {
+    $path = "public/" . $filename;
+    if (!Storage::exists($path)) abort(404);
+
+    return response()->file(Storage::path($path));
+  }
+
   public function index()
   {
     $rekening = Settings::select('rekening', 'nama_rekening', 'nama_bank', 'nowa', 'thumb1', 'thumb2', 'thumb3')->first()

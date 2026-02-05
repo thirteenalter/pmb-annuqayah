@@ -10,88 +10,116 @@
             </div>
         @endif
 
-        <div
-            class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-4">
-                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600">
-                    <span class="material-symbols-outlined" style="font-size: 32px;">settings_accessibility</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900 leading-tight">Keputusan Akhir Kelulusan</h2>
-                    <p class="text-xs text-slate-500 font-medium italic">Status Kelulusan:
-                        @php
-                            // Ambil status lulus dari relasi pendaftaran
-                            $statusLulus = $user->registration?->status_kelulusan ?? 'pending';
-                        @endphp
-                        <span
-                            class="font-bold uppercase 
+        @php
+            // 1. Cek Kelengkapan Detail Mahasiswa
+            $hasDetails = $user->studentDetail()->exists();
+
+            // 2. Cek Kelengkapan Dokumen (Contoh: minimal KTP & Ijazah sudah diunggah)
+            $hasDocuments = $user->document && $user->document->ktp_scan && $user->document->ijazah_scan;
+
+            // 3. Cek Pembayaran (Harus ada record dan statusnya 'success')
+            $hasPaid = $user->payment && $user->payment->status === 'success';
+
+            // 4. Cek Ujian (Harus ada sesi yang statusnya 'done')
+            $examFinished = $user->examSessions()->where('status', 'done')->exists();
+
+            // Gabungkan semua syarat
+            $isReadyToVerify = $hasDetails && $hasDocuments && $hasPaid && $examFinished;
+        @endphp
+
+        @if ($isReadyToVerify)
+            <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600">
+                        <span class="material-symbols-outlined" style="font-size: 32px;">settings_accessibility</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 leading-tight">Keputusan Akhir Kelulusan</h2>
+                        <p class="text-xs text-slate-500 font-medium italic">Status Kelulusan:
+                            @php
+                                // Ambil status lulus dari relasi pendaftaran
+                                $statusLulus = $user->registration?->status_kelulusan ?? 'pending';
+                            @endphp
+                            <span
+                                class="font-bold uppercase 
                     {{ $statusLulus == 'lulus' ? 'text-emerald-600' : ($statusLulus == 'tidak_lulus' ? 'text-rose-600' : 'text-amber-600') }}">
-                            {{ str_replace('_', ' ', $statusLulus) }}
-                        </span>
-                    </p>
+                                {{ str_replace('_', ' ', $statusLulus) }}
+                            </span>
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            {{-- Keputusan Kelulusan --}}
-            <div class="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
-                <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="set_graduation" value="lulus"> {{-- Ganti Name & Value --}}
-                    <button type="submit"
-                        class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all 
+                {{-- Keputusan Kelulusan --}}
+                <div class="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                    <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="set_graduation" value="lulus"> {{-- Ganti Name & Value --}}
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all 
             {{ $statusLulus === 'lulus' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
-                        LULUS
-                    </button>
-                </form>
+                            LULUS
+                        </button>
+                    </form>
 
-                <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="set_graduation" value="tidak_lulus"> {{-- Ganti Name & Value --}}
-                    <button type="submit"
-                        class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all 
+                    <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="set_graduation" value="tidak_lulus"> {{-- Ganti Name & Value --}}
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all 
             {{ $statusLulus === 'tidak_lulus' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
-                        TIDAK LULUS
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div
-            class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-4">
-                <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600">
-                    <span class="material-symbols-outlined" style="font-size: 32px;">settings_accessibility</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900 leading-tight">Keputusan Akhir Verifikasi Data</h2>
-                    <p class="text-xs text-slate-500 font-medium italic">Status saat ini:
-                        <span
-                            class="font-bold {{ $user->status == 'valid' ? 'text-emerald-600' : ($user->status == 'invalid' ? 'text-rose-600' : 'text-amber-600') }} uppercase">
-                            {{ $user->status }}
-                        </span>
-                    </p>
+                            TIDAK LULUS
+                        </button>
+                    </form>
                 </div>
             </div>
-
-            <div class="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
-                <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="final_status" value="valid">
-                    <button type="submit"
-                        class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all {{ $user->status == 'valid' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
-                        SETUJU SEMUA (VALID)
-                    </button>
-                </form>
-                <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="final_status" value="invalid">
-                    <button type="submit"
-                        class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all {{ $user->status == 'invalid' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
-                        TOLAK SEMUA (INVALID)
-                    </button>
-                </form>
+        @else
+            <div class="py-10 text-xs font-medium text-rose-600 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">info</span>
+                Data pendaftar belum lengkap (Detail/Dokumen/Pembayaran/Ujian)
             </div>
-        </div>
+        @endif
+
+
+        @if ($user->payment && $user->payment->proof_file)
+            <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-indigo-50 rounded-xl text-indigo-600">
+                        <span class="material-symbols-outlined" style="font-size: 32px;">settings_accessibility</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 leading-tight">Keputusan Akhir Verifikasi Data</h2>
+                        <p class="text-xs text-slate-500 font-medium italic">Status saat ini:
+                            <span
+                                class="font-bold {{ $user->status == 'valid' ? 'text-emerald-600' : ($user->status == 'invalid' ? 'text-rose-600' : 'text-amber-600') }} uppercase">
+                                {{ $user->status }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                    <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="final_status" value="valid">
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all {{ $user->status == 'valid' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
+                            SETUJU SEMUA (VALID)
+                        </button>
+                    </form>
+                    <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="final_status" value="invalid">
+                        <button type="submit"
+                            class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all {{ $user->status == 'invalid' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
+                            TOLAK SEMUA (INVALID)
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @endif
+
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="space-y-6">
@@ -99,7 +127,7 @@
                     <div
                         class="h-28 w-28 rounded-2xl bg-slate-100 mx-auto mb-4 border-4 border-white shadow-lg overflow-hidden">
                         @if ($user->document && $user->document->photo_formal)
-                            <img src="{{ route('admin.documents.view', [$user->id, $user->document->photo_formal]) }}"
+                            <img src="{{ route('admin.documents.view', [$user->id, 'photo_formal']) }}"
                                 class="h-full w-full object-cover">
                         @else
                             <div

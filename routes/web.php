@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\RegistrationPeriod;
 use App\Models\Settings;
 
+Route::get('/storage/{filename}', [SettingsController::class, 'showSettingsPublicImage'])
+  ->name('image.settings');
+
 Route::get('/', function () {
+
   return view('welcome');
 })->name('welcome');
 
