@@ -4,7 +4,7 @@
     <div class="mx-auto max-w-7xl py-10 px-4">
         <div class="mb-12">
             <h1 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">
-                Selamat Datang, Admin <span class="text-indigo-600">{{ Auth::user()->name }}</span>
+                Selamat Datang, <span class="text-indigo-600">Administrator</span>
             </h1>
             <p class="text-slate-500 mt-2 max-w-2xl">
                 Sistem Informasi PMB Online siap digunakan. Berikut adalah ringkasan fitur utama yang dapat Anda kelola

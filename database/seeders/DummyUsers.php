@@ -16,12 +16,12 @@ class DummyUsers extends Seeder
   {
     $userData = [
       [
-        'name'      => 'adnan',
-        'email'     => 'adnan@gmail.com',
+        'name'      => 'administrator',
+        'email'     => 'adminpmb@gmail.com',
         'nik'       => '1234567890123456',
-        'nama_ibu'  => 'Ibu Adnan',
-        'role'      => 'admin', // Mengikuti permintaan sebelumnya agar ada admin
-        'password'  => Hash::make('12345678'),
+        'nama_ibu'  => '-',
+        'role'      => 'admin',
+        'password'  => Hash::make('#adminpmb1112121388902839'),
         'status'    => 'active',
         'registration_period_id' => 1,
       ],

@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\CustomFieldValue;
+use App\Models\DataTransportasi;
+use App\Models\DataWilayah;
+use App\Models\JenisTinggal;
+use App\Models\Pekerjaan;
+use App\Models\Penghasilan;
 use Illuminate\Support\Facades\Storage;
 
 class StudentFormController extends Controller
@@ -124,6 +129,32 @@ class StudentFormController extends Controller
 
     $isLocked = $user->validity?->is_data_valid == 1;
 
+    // Ambil data details, pastikan aman jika null
+    $details = $user->registration->studentDetails ?? null;
+
+    $transportations = DataTransportasi::orderBy('nm_alat_transport', 'asc')->get();
+    $occupations     = Pekerjaan::orderBy('nm_pekerjaan', 'asc')->get();
+    $incomes         = Penghasilan::orderBy('id_penghasilan', 'asc')->get();
+    $residenceTypes  = JenisTinggal::orderBy('nm_jns_tinggal', 'asc')->get();
+
+    $provinces = DataWilayah::where('id_level_wil', 1)->orderBy('nm_wil', 'asc')->get();
+
+    // PERBAIKAN DI SINI:
+    // Tambahkan pengecekan if ($details) sebelum memanggil query
+    $cities = collect();
+    if ($details && $details->province_id) {
+      $cities = DataWilayah::where('id_induk_wilayah', $details->province_id)
+        ->orderBy('nm_wil', 'asc')
+        ->get();
+    }
+
+    $districts = collect();
+    if ($details && $details->city_id) {
+      $districts = DataWilayah::where('id_induk_wilayah', $details->city_id)
+        ->orderBy('nm_wil', 'asc')
+        ->get();
+    }
+
     $studyPrograms = StudyProgram::where('is_active', true)->select('id', 'name', 'faculty')->get();
     $customFields = CustomField::where('category', 'registration')->orderBy('order')->get();
 
@@ -131,7 +162,14 @@ class StudentFormController extends Controller
       'user',
       'customFields',
       'studyPrograms',
-      'isLocked'
+      'isLocked',
+      'transportations',
+      'occupations',
+      'incomes',
+      'residenceTypes',
+      'provinces',
+      'cities',
+      'districts'
     ));
   }
 
@@ -220,6 +258,7 @@ class StudentFormController extends Controller
         'rt'                         => $request->rt,
         'rw'                         => $request->rw,
         'kabupaten_kota'             => $request->kabupaten_kota,
+        'provinsi'             => $request->provinsi,
         'kelurahan'                  => $request->kelurahan,
         'kecamatan'                  => $request->kecamatan,
         'kode_pos'                   => $request->kode_pos,

@@ -7,6 +7,9 @@
         $validity = $validity ?? $user->validity;
         $activeWave = $activeWave ?? null;
 
+        // Logika Gratis
+        $isGratis = $activeWave && $activeWave->price == 0;
+
         // Logika Status
         $isWaiting = $payment && (!$validity || $validity->final_status === 'pending');
         $isSuccess = $validity && $validity->final_status === 'valid';
@@ -73,41 +76,59 @@
                                     </div>
                                 </div>
 
-                                <div class="space-y-4">
-                                    <p class="text-sm font-bold text-slate-800 uppercase tracking-widest">Pilihan Bank
-                                        Transfer:</p>
+                                {{-- SEMBUNYIKAN INSTRUKSI BANK JIKA GRATIS --}}
+                                @if (!$isGratis)
+                                    <div class="space-y-4">
+                                        <p class="text-sm font-bold text-slate-800 uppercase tracking-widest">Pilihan
+                                            Bank
+                                            Transfer:</p>
 
-                                    <div
-                                        class="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                                        <div class="flex items-center gap-4">
-                                            <div
-                                                class="w-14 h-9 bg-white rounded border border-slate-200 flex items-center justify-center font-bold text-xs text-blue-600">
-                                                {{ strtoupper($bank ?? '-') }}</div>
-                                            <div>
-                                                <p class="text-[10px] text-slate-400 uppercase font-bold">Nomor Rekening
+                                        <div
+                                            class="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <div class="flex items-center gap-4">
+                                                <div
+                                                    class="w-14 h-9 bg-white rounded border border-slate-200 flex items-center justify-center font-bold text-xs text-blue-600">
+                                                    {{ strtoupper($bank ?? '-') }}</div>
+                                                <div>
+                                                    <p class="text-[10px] text-slate-400 uppercase font-bold">Nomor
+                                                        Rekening
+                                                    </p>
+                                                    <p class="font-mono font-bold text-slate-900 text-lg">
+                                                        {{ $rekening ?? 'Belum diatur' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-[10px] text-slate-400 uppercase font-bold">Atas Nama</p>
+                                                <p class="font-bold text-slate-800 text-sm italic">
+                                                    {{ $atas_nama ?? '-' }}
                                                 </p>
-                                                <p class="font-mono font-bold text-slate-900 text-lg">
-                                                    {{ $rekening ?? 'Belum diatur' }}</p>
                                             </div>
                                         </div>
-                                        <div class="text-right">
-                                            <p class="text-[10px] text-slate-400 uppercase font-bold">Atas Nama</p>
-                                            <p class="font-bold text-slate-800 text-sm italic"> {{ $atas_nama ?? '-' }}
-                                            </p>
+                                    </div>
+                                @else
+                                    <div
+                                        class="p-6 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-4">
+                                        <span class="material-symbols-outlined text-green-600 text-3xl">redeem</span>
+                                        <div class="text-sm text-green-900">
+                                            <p class="font-bold">Biaya Pendaftaran Rp 0 (Gratis)</p>
+                                            <p>Kamu tidak perlu melakukan transfer bank. Silakan langsung kirim
+                                                konfirmasi pada kolom verifikasi.</p>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </div>
 
-                        <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6 flex gap-4">
-                            <span class="material-symbols-outlined text-amber-600 text-3xl">info</span>
-                            <div class="text-sm text-amber-900">
-                                <p class="font-bold mb-1">Penting:</p>
-                                <p>Pastikan nominal transfer sesuai dengan tagihan di atas dan simpan struk/bukti
-                                    transfer Anda.</p>
+                        @if (!$isGratis)
+                            <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6 flex gap-4">
+                                <span class="material-symbols-outlined text-amber-600 text-3xl">info</span>
+                                <div class="text-sm text-amber-900">
+                                    <p class="font-bold mb-1">Penting:</p>
+                                    <p>Pastikan nominal transfer sesuai dengan tagihan di atas dan simpan struk/bukti
+                                        transfer Anda.</p>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
 
                     {{-- KOLOM KANAN: STATUS / FORM --}}
@@ -138,7 +159,7 @@
                                         </div>
                                         <h3 class="font-bold text-slate-800 text-xl">Sedang Dicek</h3>
                                         <p class="text-xs text-slate-500 mt-2">Mohon tunggu, admin sedang memvalidasi
-                                            bukti transfer Anda.</p>
+                                            data Anda.</p>
                                     </div>
                                 @elseif($activeWave)
                                     @if ($isRejected)
@@ -155,38 +176,52 @@
                                         <input type="hidden" name="registration_period_id"
                                             value="{{ $activeWave->id }}">
 
-                                        <div class="mb-6">
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-3">Upload
-                                                Bukti Transfer</label>
-                                            <div
-                                                class="relative group border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-indigo-50 hover:border-indigo-300 transition-all cursor-pointer">
-                                                <input type="file" name="proof_file" required
-                                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                                                <span
-                                                    class="material-symbols-outlined text-slate-400 group-hover:text-indigo-500 text-3xl mb-1">cloud_upload</span>
-                                                <p
-                                                    class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
-                                                    JPG/PNG (Maks 2MB)</p>
+                                        {{-- HANYA TAMPILKAN INPUT JIKA TIDAK GRATIS --}}
+                                        @if (!$isGratis)
+                                            <div class="mb-6">
+                                                <label
+                                                    class="block text-xs font-bold text-slate-500 uppercase mb-3">Upload
+                                                    Bukti Transfer</label>
+                                                <div
+                                                    class="relative group border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-indigo-50 hover:border-indigo-300 transition-all cursor-pointer">
+                                                    <input type="file" name="proof_file" required
+                                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                                    <span
+                                                        class="material-symbols-outlined text-slate-400 group-hover:text-indigo-500 text-3xl mb-1">cloud_upload</span>
+                                                    <p
+                                                        class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
+                                                        JPG/PNG (Maks 2MB)</p>
+                                                </div>
+                                                @error('proof_file')
+                                                    <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
+                                                @enderror
                                             </div>
-                                            @error('proof_file')
-                                                <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
 
-                                        <div class="mb-6">
-                                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Nama
-                                                Pengirim</label>
-                                            <input type="text" name="account_name" required
-                                                value="{{ old('account_name') }}" placeholder="Contoh: Ahmad Subagjo"
-                                                class="w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                            @error('account_name')
-                                                <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
+                                            <div class="mb-6">
+                                                <label
+                                                    class="block text-xs font-bold text-slate-500 uppercase mb-2">Nama
+                                                    Pengirim</label>
+                                                <input type="text" name="account_name" required
+                                                    value="{{ old('account_name') }}"
+                                                    placeholder="Contoh: Ahmad Subagjo"
+                                                    class="w-full px-4 py-3 bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                                @error('account_name')
+                                                    <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+                                        @else
+                                            <div class="mb-6 p-4 bg-indigo-50 rounded-2xl text-center">
+                                                <p class="text-xs text-indigo-700 font-bold uppercase italic">Konfirmasi
+                                                    pendaftaran gratis Anda</p>
+                                            </div>
+                                            {{-- Input hidden agar controller tidak error jika validasi mewajibkan input --}}
+                                            <input type="hidden" name="account_name" value="-">
+                                            <input type="hidden" name="proof_file_is_free" value="true">
+                                        @endif
 
                                         <button type="submit"
                                             class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 shadow-xl transition-all flex items-center justify-center gap-2">
-                                            Kirim Konfirmasi
+                                            {{ $isGratis ? 'Konfirmasi Pendaftaran' : 'Kirim Konfirmasi' }}
                                             <span class="material-symbols-outlined text-sm">send</span>
                                         </button>
                                     </form>

@@ -17,16 +17,20 @@ class StudentDetails extends Model
     'dusun',
     'rt',
     'rw',
+    'provinsi',        // Menyimpan Nama String
+    'province_id',     // Helper ID
+    'kabupaten_kota',  // Menyimpan Nama String
+    'city_id',         // Helper ID
+    'kecamatan',       // Menyimpan Nama String
+    'district_id',     // Helper ID
     'kelurahan',
-    'kecamatan',
     'kode_pos',
     'telepon',
-    'kabupaten_kota',
     'hp',
     'email',
     'penerima_kps',
-    'alat_transportasi',
-    'jenis_tinggal',
+    'alat_transportasi', // Menyimpan Nama String
+    'jenis_tinggal',     // Menyimpan Nama String
     'kebutuhan_khusus_mahasiswa',
     'kebutuhan_khusus_ayah',
     'kebutuhan_khusus_ibu'

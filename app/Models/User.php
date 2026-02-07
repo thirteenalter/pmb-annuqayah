@@ -107,7 +107,6 @@ class User extends Authenticatable
   }
 
 
-
   public function studentDetail()
   {
     return $this->hasOneThrough(StudentDetails::class, Registration::class);

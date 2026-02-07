@@ -40,6 +40,12 @@ Route::get('/cek-verifikasi', function () {
   ]);
 })->middleware(['auth', 'verified'])->name('verifikasi.index');
 
+Route::get('/api/regions/{parentId}', function ($parentId) {
+  return App\Models\DataWilayah::where('id_induk_wilayah', $parentId)
+    ->orderBy('nm_wil', 'asc')
+    ->get();
+});
+
 Route::get('/cek-pembayaran', function () {
   /** @var \App\Models\User $user */
   $user = Auth::user();
@@ -71,26 +77,36 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   // routes/web.php
   Route::get('/formulir/pembayaran', function () {
-    $user = Auth::user();
+    // Eager load relasi agar efisien
+    $user = Auth::user()->load(['registrationPeriod', 'payment']);
 
-    if ($user->isDataLengkap() == false) {
-      return redirect()->route('isi-dokumen')->with('error', 'Silakan lengkapi data dan unggah dokumen terlebih dahulu sebelum melakukan pembayaran.');
+    if (!$user->isDataLengkap()) {
+      return redirect()->route('isi-dokumen')
+        ->with('error', 'Silakan lengkapi data dan unggah dokumen terlebih dahulu.');
     }
 
-    $setting = Settings::select("rekening", "nama_rekening", "nama_bank")->first();
-    $activeWave = RegistrationPeriod::where('is_active', true)->first();
+    $setting = Settings::first(['rekening', 'nama_rekening', 'nama_bank']);
+    $selectedWave = $user->registrationPeriod;
+
+    if (!$selectedWave) {
+      return redirect()->route('formulir')
+        ->with('error', 'Silakan pilih gelombang pendaftaran terlebih dahulu.');
+    }
+
+    // Tambahkan state isGratis
+    $isGratis = ($selectedWave->price == 0);
 
     return view('camaba.formulir.payment', [
-      'activeWave' => $activeWave,
-      'user' => $user,
-      'payment' => $user?->payment,
-      'validity' => $user?->validity,
-      'rekening' => $setting->rekening,
-      'atas_nama' => $setting->nama_rekening,
-      'bank' => $setting->nama_bank,
+      'activeWave' => $selectedWave,
+      'user'       => $user,
+      'payment'    => $user->payment,
+      'validity'   => $user->validity,
+      'rekening'   => $setting->rekening ?? "-",
+      'atas_nama'  => $setting->nama_rekening ?? "-",
+      'bank'       => $setting->nama_bank ?? "-",
+      'isGratis'   => $isGratis, // Kirim state ke view
     ]);
   })->middleware(['auth', 'verified'])->name('formulir.pembayaran');
-
 
 
   Route::get('/exams', [App\Http\Controllers\Student\ExamController::class, 'index'])->name('exams.index');

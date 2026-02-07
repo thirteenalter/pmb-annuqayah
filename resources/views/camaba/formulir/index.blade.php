@@ -138,7 +138,7 @@
                 @endphp
                 <div
                     class="bg-slate-50/80 border-t border-slate-100 p-6 text-center text-slate-500 text-xs font-semibold">
-                    Butuh bantuan teknis? <a href="https://wa.me/{{ $settings->nowa }}"
+                    Butuh bantuan teknis? <a href="https://wa.me/{{ $settings?->nowa }}"
                         class="text-indigo-600 hover:text-indigo-800 underline decoration-2 underline-offset-4">Hubungi
                         Tim Admisi</a>
                 </div>

@@ -62,7 +62,7 @@
                                 <div
                                     class="relative group aspect-video w-full overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center">
                                     @if (isset($rekening->$field))
-                                        <img src="{{ asset('storage/' . $rekening->$field) }}"
+                                        <img src="{{ route('image.settings', ['filename' => $rekening->$field]) }}"
                                             class="h-full w-full object-cover">
                                         <div
                                             class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

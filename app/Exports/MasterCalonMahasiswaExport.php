@@ -11,7 +11,6 @@ class MasterCalonMahasiswaExport implements FromQuery, WithHeadings, WithMapping
 {
   public function query()
   {
-    // Ambil semua relasi yang ada di model Registration & User
     return Registration::query()->with([
       'user.identity',
       'user.document',
@@ -37,6 +36,7 @@ class MasterCalonMahasiswaExport implements FromQuery, WithHeadings, WithMapping
       'NISN',
       'Agama',
       'Alamat (Jalan)',
+      'Provinsi',
       'Kecamatan',
       'Kota/Kab',
       'Nama Ayah',
@@ -62,6 +62,7 @@ class MasterCalonMahasiswaExport implements FromQuery, WithHeadings, WithMapping
       $reg->studentProfile->nisn ?? '-',
       $reg->studentProfile->religion ?? '-',
       $reg->studentDetails->jalan ?? '-',
+      $reg->studentDetails->provinsi ?? '-',
       $reg->studentDetails->kecamatan ?? '-',
       $reg->studentDetails->kabupaten_kota ?? '-',
       $reg->studentFamily->nama_ayah ?? '-',

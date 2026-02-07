@@ -11,19 +11,14 @@
         @endif
 
         @php
-            // 1. Cek Kelengkapan Detail Mahasiswa
             $hasDetails = $user->studentDetail()->exists();
 
-            // 2. Cek Kelengkapan Dokumen (Contoh: minimal KTP & Ijazah sudah diunggah)
             $hasDocuments = $user->document && $user->document->ktp_scan && $user->document->ijazah_scan;
 
-            // 3. Cek Pembayaran (Harus ada record dan statusnya 'success')
             $hasPaid = $user->payment && $user->payment->status === 'success';
 
-            // 4. Cek Ujian (Harus ada sesi yang statusnya 'done')
             $examFinished = $user->examSessions()->where('status', 'done')->exists();
 
-            // Gabungkan semua syarat
             $isReadyToVerify = $hasDetails && $hasDocuments && $hasPaid && $examFinished;
         @endphp
 
@@ -373,24 +368,40 @@
                             </form>
                         </div> --}}
                     </div>
+                    @php
+                        $user = $user ?? auth()->user();
+                        $payment = $payment ?? $user->payment;
+                        $validity = $validity ?? $user->validity;
 
-                    <div class="p-6">
-                        <div
-                            class="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-100 flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] font-bold text-amber-600 uppercase">Nama Pengirim (Rekening)</p>
-                                <p class="text-sm font-black text-amber-900">
-                                    {{ $user->payment?->account_name ?? 'Belum Upload' }}</p>
+                        $selectedWave = $user->registrationPeriod;
+
+                        $isGratis = $selectedWave && $selectedWave->price == 0;
+
+                        // Logika Status
+                        $isWaiting = $payment && (!$validity || $validity->final_status === 'pending');
+                        $isSuccess = $validity && $validity->final_status === 'valid';
+                        $isRejected = $validity && $validity->final_status === 'invalid';
+                    @endphp
+                    @if (!$isGratis)
+                        <div class="p-6">
+                            <div
+                                class="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-100 flex justify-between items-center">
+                                <div>
+                                    <p class="text-[10px] font-bold text-amber-600 uppercase">Nama Pengirim (Rekening)
+                                    </p>
+                                    <p class="text-sm font-black text-amber-900">
+                                        {{ $user->payment?->account_name ?? 'Belum Upload' }}</p>
+                                </div>
+                                @if ($user->payment?->proof_file && $user->payment?->proof_file !== '-')
+                                    <a href="{{ route('admin.payments.view', $user->id) }}" target="_blank"
+                                        class="px-4 py-2 bg-amber-600 text-white rounded-lg text-xs font-bold shadow-md">LIHAT
+                                        BUKTI BAYAR</a>
+                                @endif
                             </div>
-                            @if ($user->payment?->proof_file)
-                                <a href="{{ route('admin.payments.view', $user->id) }}" target="_blank"
-                                    class="px-4 py-2 bg-amber-600 text-white rounded-lg text-xs font-bold shadow-md">LIHAT
-                                    BUKTI BAYAR</a>
-                            @endif
+
+
                         </div>
-
-
-                    </div>
+                    @endif
 
                 </div>
 

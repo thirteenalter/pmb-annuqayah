@@ -66,15 +66,27 @@ class FormController extends Controller
 
   public function pilihGelombang(Request $request)
   {
-    $request->validate([
+    $validated = $request->validate([
       'registration_period_id' => 'required|exists:registration_periods,id',
     ]);
 
-    $user = auth()->user();
-    $user->registration_period_id = $request->registration_period_id;
-    $user->save();
+    $user = $request->user();
+    $user->update($validated);
 
-    return redirect()->route('student.index')->with('success', 'Gelombang pendaftaran berhasil dipilih.');
+    $period = RegistrationPeriod::find($request->registration_period_id);
+
+    if ($period->price == 0) {
+      $user->payment()->updateOrCreate(
+        ['user_id' => $user->id],
+        [
+          'account_name' => '-',
+          'proof_file'   => '-',
+          'status'       => 'success'
+        ]
+      );
+    }
+
+    return redirect()->route('student.index')->with('success', 'Gelombang berhasil dipilih.');
   }
 
   private function saveCustomFields(Request $request, $category)
