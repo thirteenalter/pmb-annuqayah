@@ -11,7 +11,7 @@
         $isGratis = $activeWave && $activeWave->price == 0;
 
         // Logika Status
-        $isWaiting = $payment && (!$validity || $validity->final_status === 'pending');
+        $isWaiting = $payment && !$validity;
         $isSuccess = $validity && $validity->final_status === 'valid';
         $isRejected = $validity && $validity->final_status === 'invalid';
     @endphp
@@ -209,21 +209,21 @@
                                                     <p class="text-red-500 text-[10px] mt-1">{{ $message }}</p>
                                                 @enderror
                                             </div>
+                                            <button type="submit"
+                                                class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 shadow-xl transition-all flex items-center justify-center gap-2">
+                                                {{ $isGratis ? 'Konfirmasi Pendaftaran' : 'Kirim Konfirmasi' }}
+                                                <span class="material-symbols-outlined text-sm">send</span>
+                                            </button>
                                         @else
                                             <div class="mb-6 p-4 bg-indigo-50 rounded-2xl text-center">
-                                                <p class="text-xs text-indigo-700 font-bold uppercase italic">Konfirmasi
-                                                    pendaftaran gratis Anda</p>
+                                                <p class="text-xs text-indigo-700 font-bold uppercase italic">
+                                                    pendaftaran anda gratis</p>
                                             </div>
                                             {{-- Input hidden agar controller tidak error jika validasi mewajibkan input --}}
                                             <input type="hidden" name="account_name" value="-">
                                             <input type="hidden" name="proof_file_is_free" value="true">
                                         @endif
 
-                                        <button type="submit"
-                                            class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 shadow-xl transition-all flex items-center justify-center gap-2">
-                                            {{ $isGratis ? 'Konfirmasi Pendaftaran' : 'Kirim Konfirmasi' }}
-                                            <span class="material-symbols-outlined text-sm">send</span>
-                                        </button>
                                     </form>
                                 @endif
                             </div>

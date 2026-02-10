@@ -35,6 +35,7 @@ class Registration extends Model
   }
 
 
+
   public function secondStudyProgram()
   {
     return $this->belongsTo(StudyProgram::class, 'study_program_id_second');

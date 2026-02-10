@@ -14,9 +14,17 @@ class ExamController extends Controller
   {
     $user = Auth::user();
 
+    if ($user->registrationPeriod->price === 0 && $user->validity->is_document_valid && $user->validity->is_data_valid) {
+      $exams = Exam::withExists(['sessions' => function ($query) use ($user) {
+        $query->where('user_id', $user->id)->where('status', 'done');
+      }])->latest()->get();
+
+      return view('camaba.exams.index', compact('exams'));
+    }
+
     if (!$user->validity || $user->validity->final_status !== 'valid') {
       return view('camaba.unverified', [
-        'status' => $user->validity->final_status ?? 'pending',
+        'status' => $user->validity->final_status ?? "pending",
         'note' => $user->validity->admin_note ?? 'Data kamu sedang dalam antrian verifikasi.'
       ]);
     }

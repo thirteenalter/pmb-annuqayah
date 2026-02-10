@@ -89,6 +89,12 @@ class FormController extends Controller
             'status'       => 'success'
           ]
         );
+        $user->validity()->updateOrCreate(
+          ['user_id' => $user->id],
+          [
+            'is_payment_valid' => 1,
+          ]
+        );
       } else {
         if ($user->payment) {
           $user->payment()->delete();

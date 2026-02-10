@@ -188,114 +188,192 @@
     </div>
     {{-- AREA KHUSUS CETAK (Hanya Muncul di Printer) --}}
     @if ($payment && $finalStatus === 'valid')
-        <div id="print-area">
+        <style>
+            @media print {
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
+
+                #print-area {
+                    padding: 0 !important;
+                }
+
+                .no-print {
+                    display: none;
+                }
+            }
+        </style>
+
+        <div id="print-area" style="padding: 20px; background: #f1f5f9;">
             <div
-                style="width: 210mm; margin: 0 auto;  background: #fff; position: relative; font-family: 'Arial', sans-serif;">
+                style="
+        max-width: 800px; 
+        margin: 0 auto; 
+        background: #fff; 
+        padding: 10px; 
+        border-radius: 4px;
+        position: relative; 
+        font-family: 'Inter', 'Arial', sans-serif;
+    ">
 
                 <div
-                    style=" padding: 0px; position: relative; overflow: hidden; border-radius: 8px; background-image: url('https://pmb.ua.ac.id/wp-content/uploads/2025/01/cropped-1.-Logo-Alternatif-Universitas-Annuqayah.png'); background-repeat: no-repeat; background-position: center; background-size: 40%; background-color: rgba(255, 255, 255, 0.95); background-blend-mode: overlay;">
+                    style="
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            opacity: 0.05; 
+            z-index: 0; 
+            width: 300px;
+        ">
+                    <img src="https://pmb.ua.ac.id/wp-content/uploads/2025/01/cropped-1.-Logo-Alternatif-Universitas-Annuqayah.png"
+                        style="width: 100%;">
+                </div>
 
+                <div style="position: relative; z-index: 1;">
                     <div
-                        style="display: flex; align-items: center; border-bottom: 4px double #1e293b; padding-bottom: 15px; margin-bottom: 25px; position: relative; z-index: 1;">
+                        style="display: flex; align-items: center; border-bottom: 3px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px;">
                         <img src="https://pmb.ua.ac.id/wp-content/uploads/2025/01/cropped-1.-Logo-Alternatif-Universitas-Annuqayah.png"
-                            alt="Logo Universitas Annuqayah" style="height: 50px; width: auto; margin-right: 20px;">
+                            alt="Logo" style="height: 65px; width: auto; margin-right: 20px;">
 
                         <div style="flex-grow: 1;">
                             <h2
-                                style="margin: 0; font-size: 20px; font-weight: 900; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px;">
+                                style="margin: 0; font-size: 18px; font-weight: 800; color: #1e293b; text-transform: uppercase;">
                                 Universitas Annuqayah</h2>
                             <p style="margin: 2px 0; font-size: 12px; color: #1e293b; font-weight: 700;">PANITIA
                                 PENERIMAAN MAHASISWA BARU (PMB)</p>
-                            <p style="margin: 0; font-size: 10px; color: #64748b;">Jl. Bukit Lancaran, Guluk-Guluk,
-                                Sumenep, Jawa Timur 69463</p>
-                            <p style="margin: 0; font-size: 10px; color: #64748b;">Website: pmb.ua.ac.id | Email:
-                                pmb@ua.ac.id</p>
+                            <p style="margin: 0; font-size: 10px; color: #475569; line-height: 1.4;">
+                                Jl. Bukit Lancaran, Guluk-Guluk, Sumenep, Jawa Timur 69463<br>
+                                Website: <span style="color: #2563eb;">pmb.ua.ac.id</span> | Email: pmb@ua.ac.id
+                            </p>
                         </div>
 
                         <div style="text-align: right;">
                             <div
-                                style="display: inline-block; padding: 8px 15px; border: 3px solid #059669; color: #059669; font-weight: 900; font-size: 16px; border-radius: 8px; background: #fff;">
-                                LUNAS
+                                style="
+                        border: 2px solid #059669; 
+                        color: #059669; 
+                        padding: 5px 15px; 
+                        font-weight: 800; 
+                        border-radius: 4px; 
+                        font-size: 14px;
+                        text-transform: uppercase;
+                    ">
+                                Lunas
                             </div>
                         </div>
                     </div>
 
-                    <div style="text-align: center; margin-bottom: 30px; position: relative; z-index: 1;">
-                        <h1 style="margin: 0; font-size: 20px; font-weight: 900; color: #1e293b; letter-spacing: 2px;">
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <h1 style="margin: 0; font-size: 18px; font-weight: 800; color: #1e293b; letter-spacing: 1px;">
                             BUKTI PEMBAYARAN PENDAFTARAN</h1>
                         <p
-                            style="margin: 5px 0 0 0; font-size: 12px; font-family: monospace; color: #475569; font-weight: bold;">
-                            NOMOR TRANSAKSI:
-                            UA-{{ date('Y') }}{{ $user->id }}{{ strtoupper(substr(md5($user->id), 0, 4)) }}</p>
+                            style="margin: 5px 0 0 0; font-size: 11px; font-family: 'Courier New', monospace; color: #64748b;">
+                            Ref No:
+                            UA-{{ date('Y') }}{{ $user->id }}-{{ strtoupper(substr(md5($user->id), 0, 4)) }}
+                        </p>
                     </div>
 
-                    <div
-                        style="display: grid; grid-template-columns: 1.6fr 0.9fr; gap: 10px; position: relative; z-index: 1;">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
                         <div
-                            style="background: rgba(248, 250, 252, 0.8); padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                                <tr>
-                                    <td style="padding: 10px 0; color: #64748b; width: 160px;">Nama Pendaftar</td>
-                                    <td style="padding: 10px 0; font-weight: 800; color: #1e293b;">:
-                                        {{ strtoupper($user->name) }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px 0; color: #64748b;">ID Pendaftaran (User)</td>
-                                    <td style="padding: 10px 0; font-weight: 800; color: #1e293b;">:
-                                        {{ $user->id }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px 0; color: #64748b;">Program Studi Pilihan</td>
-                                    <td style="padding: 10px 0; font-weight: 800; color: #1e293b;">:
-                                        {{ $user->registration->study_program ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px 0; color: #64748b;">Tanggal Verifikasi</td>
-                                    <td style="padding: 10px 0; font-weight: 800; color: #1e293b;">:
-                                        {{ \Carbon\Carbon::parse($user->validity?->verified_at)->translatedFormat('d F Y') }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px 0; color: #64748b;">Status Pembayaran</td>
-                                    <td style="padding: 10px 0; font-weight: 800; color: #059669;">: TERVERIFIKASI
-                                        (VALID)</td>
-                                </tr>
-                            </table>
-                        </div>
+                            style="
+                    display: grid; 
+                    grid-template-columns: repeat(2, 1fr); 
+                    gap: 15px; 
+                    background: #f8fafc; 
+                    padding: 20px; 
+                    border-radius: 8px; 
+                    border: 1px solid #e2e8f0;
+                ">
+                            <div style="grid-column: span 2; margin-bottom: 5px;">
+                                <small style="color: #64748b; font-size: 10px; text-transform: uppercase;">Nama
+                                    Lengkap</small>
+                                <div
+                                    style="font-weight: 700; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">
+                                    {{ strtoupper($user->name) }}</div>
+                            </div>
 
-                        <div
-                            style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 15px; background: #fff;">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=VALID-UA-{{ $user->id }}"
-                                alt="QR Verification" style="width: 110px; height: 110px; margin-bottom: 10px;">
-                            <p style="font-size: 10px; color: #1e293b; font-weight: bold; margin-bottom: 2px;">
-                                VERIFIKASI DIGITAL</p>
-                            <p style="font-size: 8px; color: #94a3b8;">Gunakan kode ini untuk validasi data saat tes
-                                seleksi</p>
-                        </div>
-                    </div>
+                            <div>
+                                <small style="color: #64748b; font-size: 10px; text-transform: uppercase;">ID
+                                    Pendaftar</small>
+                                <div style="font-weight: 700; color: #1e293b;">#{{ $user->id }}</div>
+                            </div>
 
-                    <div
-                        style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #1e293b; position: relative; z-index: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                            <div style="font-size: 10px; color: #475569; line-height: 1.6;">
-                                <p style="margin: 0; font-weight: 900; color: #1e293b; text-transform: uppercase;">
-                                    Informasi:</p>
-                                <ol style="margin: 5px 0 0 0; padding-left: 15px;">
-                                    <li>Simpan kartu ini sebagai bukti pembayaran pendaftaran yang sah.</li>
-                                    <li>Kartu ini wajib dibawa (cetak/digital) saat mengikuti tahapan tes selanjutnya.
-                                    </li>
-                                    <li>Dokumen ini diterbitkan secara otomatis oleh sistem PMB Universitas Annuqayah.
-                                    </li>
-                                </ol>
+                            <div>
+                                <small
+                                    style="color: #64748b; font-size: 10px; text-transform: uppercase;">Gelombang</small>
+                                <div style="font-weight: 700; color: #1e293b;">
+                                    {{ $user->registrationPeriod->name ?? '-' }}</div>
+                            </div>
+                            <div>
+                                <small style="color: #64748b; font-size: 10px; text-transform: uppercase;">Biaya</small>
+                                <div style="font-weight: 700; color: #1e293b;">
+                                    {{ $user->registrationPeriod->price === 0 ? 'gratis' : $user->registrationPeriod->price }}
+                                </div>
+                            </div>
+
+                            <div style="grid-column: span 2;">
+                                <small style="color: #64748b; font-size: 10px; text-transform: uppercase;">Program Studi
+                                    Utama</small>
+                                <div style="font-weight: 700; color: #1e293b;">
+                                    {{ $user->registration->studyProgram->name ?? '-' }}</div>
+                            </div>
+
+                            <div>
+                                <small style="color: #64748b; font-size: 10px; text-transform: uppercase;">Tanggal
+                                    Verifikasi</small>
+                                <div style="font-weight: 700; color: #1e293b;">
+                                    {{ \Carbon\Carbon::parse($user->validity?->verified_at)->translatedFormat('d M Y') }}
+                                </div>
+                            </div>
+
+                            <div>
+                                <small
+                                    style="color: #64748b; font-size: 10px; text-transform: uppercase;">Status</small>
+                                <div style="font-weight: 700; color: #059669;">Verified ✓</div>
                             </div>
                         </div>
+
+                        <div
+                            style="
+                    text-align: center; 
+                    border: 1px solid #e2e8f0; 
+                    border-radius: 8px; 
+                    padding: 15px; 
+                    display: flex; 
+                    flex-direction: column; 
+                    justify-content: center; 
+                    align-items: center;
+                    background: #fff;
+                ">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=VALID-UA-{{ $user->id }}"
+                                alt="QR" style="width: 100px; height: 100px; margin-bottom: 10px;">
+                            <p style="font-size: 9px; color: #1e293b; font-weight: 800; margin: 0;">DIGITAL SIGNATURE
+                            </p>
+                            <p style="font-size: 8px; color: #94a3b8; margin-top: 4px; line-height: 1.2;">Scan untuk
+                                validasi keaslian dokumen</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <div
+                            style="background: #f1f5f9; padding: 12px; border-radius: 4px; border-left: 4px solid #1e293b;">
+                            <p style="margin: 0 0 5px 0; font-size: 11px; font-weight: 800; color: #1e293b;">PENTING:
+                            </p>
+                            <ul
+                                style="margin: 0; padding-left: 15px; font-size: 10px; color: #475569; line-height: 1.5;">
+                                <li>Bukti ini adalah dokumen sah pengganti kuitansi fisik pendaftaran.</li>
+                                <li>Wajib dibawa dalam bentuk cetak saat pelaksanaan tes seleksi.</li>
+                                <li>Pastikan QR Code di atas terbaca dengan jelas (tidak buram/terlipat).</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div
-                        style="margin-top: 25px; text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 9px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 10px;">
-                        E-RECEIPT ID: {{ strtoupper(md5($user->email)) }} | PRINT_AT:
-                        {{ now()->format('d/m/Y H:i:s') }}
+                        style="margin-top: 30px; text-align: center; font-size: 9px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 10px;">
+                        Dicetak secara sistem pada {{ now()->translatedFormat('d F Y H:i') }} WIB | Sistem Informasi
+                        PMB Universitas Annuqayah
                     </div>
                 </div>
             </div>
