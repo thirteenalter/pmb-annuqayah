@@ -13,12 +13,17 @@ class SettingsController extends Controller
    * Display a listing of the resource.
    */
 
-  public function showSettingsPublicImage($filename)
+  public function showSettingsPublicImage($path)
   {
-    $path = "public/" . $filename;
-    if (!Storage::exists($path)) abort(404);
+    // $path sudah berisi "settings/namafile.jpg" dari database
+    $fullPath = storage_path('app/public/' . $path);
 
-    return response()->file(Storage::path($path));
+    if (!file_exists($fullPath)) {
+      abort(404, "File tidak ditemukan di: " . $fullPath);
+    }
+
+    // Pastikan server mengirimkan file dengan benar
+    return response()->file($fullPath);
   }
 
   public function index()

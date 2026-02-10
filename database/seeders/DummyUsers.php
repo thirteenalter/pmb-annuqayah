@@ -17,24 +17,14 @@ class DummyUsers extends Seeder
     $userData = [
       [
         'name'      => 'administrator',
-        'email'     => 'adminpmb@gmail.com',
+        'email'     => env('APP_USERNAME_ADMIN'),
         'nik'       => '1234567890123456',
         'nama_ibu'  => '-',
         'role'      => 'admin',
-        'password'  => Hash::make('#adminpmb1112121388902839'),
+        'password'  => Hash::make(env('APP_PASSWORD_ADMIN')),
         'status'    => 'active',
         'registration_period_id' => 1,
-      ],
-      [
-        'name'      => 'ridho',
-        'email'     => 'ridho@gmail.com',
-        'nik'       => '1234567890123457',
-        'nama_ibu'  => 'Ibu Ridho',
-        'role'      => 'user',
-        'password'  => Hash::make('12345678'),
-        'status'    => 'pending',
-        'registration_period_id' => 1,
-      ],
+      ]
     ];
 
     foreach ($userData as $user) {

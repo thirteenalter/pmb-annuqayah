@@ -47,7 +47,6 @@
 
                 <hr class="my-8 border-gray-100">
 
-                {{-- SEKSI UPLOAD THUMBNAIL --}}
                 <div class="mb-6">
                     <h2 class="text-lg font-bold text-gray-800 mb-4">Thumbnail Informasi</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -58,11 +57,10 @@
                                     class="block text-sm font-semibold text-gray-600 uppercase tracking-wider">Thumbnail
                                     {{ $i }}</label>
 
-                                {{-- Preview Area --}}
                                 <div
                                     class="relative group aspect-video w-full overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center">
                                     @if (isset($rekening->$field))
-                                        <img src="{{ route('image.settings', ['filename' => $rekening->$field]) }}"
+                                        <img src="{{ route('image.settings', ['path' => $rekening->$field]) }}"
                                             class="h-full w-full object-cover">
                                         <div
                                             class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

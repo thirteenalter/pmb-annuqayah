@@ -71,22 +71,35 @@ class FormController extends Controller
     ]);
 
     $user = $request->user();
-    $user->update($validated);
+    $newPeriodId = $request->registration_period_id;
+    $period = RegistrationPeriod::find($newPeriodId);
 
-    $period = RegistrationPeriod::find($request->registration_period_id);
+    if ($user->registration_period_id != $newPeriodId) {
 
-    if ($period->price == 0) {
-      $user->payment()->updateOrCreate(
-        ['user_id' => $user->id],
-        [
-          'account_name' => '-',
-          'proof_file'   => '-',
-          'status'       => 'success'
-        ]
-      );
+      $user->update([
+        'registration_period_id' => $newPeriodId
+      ]);
+
+      if ($period->price == 0) {
+        $user->payment()->updateOrCreate(
+          ['user_id' => $user->id],
+          [
+            'account_name' => '-',
+            'proof_file'   => '-',
+            'status'       => 'success'
+          ]
+        );
+      } else {
+        if ($user->payment) {
+          $user->payment()->delete();
+        }
+        if ($user->validity) {
+          $user->validity()->delete();
+        }
+      }
     }
 
-    return redirect()->route('student.index')->with('success', 'Gelombang berhasil dipilih.');
+    return redirect()->route('student.index')->with('success', 'Gelombang berhasil diperbarui dan status pembayaran telah direset.');
   }
 
   private function saveCustomFields(Request $request, $category)

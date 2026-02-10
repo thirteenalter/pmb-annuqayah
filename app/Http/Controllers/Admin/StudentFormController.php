@@ -14,6 +14,7 @@ class StudentFormController extends Controller
   //
   public function show(int $id)
   {
+    // 1. Ambil data user dengan relasi lengkap
     $user = User::with([
       'identity',
       'registration',
@@ -23,26 +24,62 @@ class StudentFormController extends Controller
       'validity',
     ])->findOrFail($id);
 
+    // 2. Admin biasanya bisa edit, jadi kita set false
     $isLocked = false;
 
-    $studyPrograms = StudyProgram::query()
+    // 3. AMBIL DATA WILAYAH (Provinsi) - Ini yang tadi bikin error
+    $provinces = \App\Models\DataWilayah::where('id_level_wil', 1)
+      ->orderBy('nm_wil', 'asc')
+      ->get();
+
+    // 4. Ambil data pendukung lainnya (agar komponen detail.blade tidak error)
+    $transportations = \App\Models\DataTransportasi::orderBy('nm_alat_transport', 'asc')->get();
+    $occupations     = \App\Models\Pekerjaan::orderBy('nm_pekerjaan', 'asc')->get();
+    $incomes         = \App\Models\Penghasilan::orderBy('id_penghasilan', 'asc')->get();
+    $residenceTypes  = \App\Models\JenisTinggal::orderBy('nm_jns_tinggal', 'asc')->get();
+
+    // 5. Logika Kota dan Kecamatan berdasarkan data user yang sedang dibuka
+    $details = $user->registration->studentDetails ?? null;
+    $cities = collect();
+    if ($details && $details->province_id) {
+      $cities = \App\Models\DataWilayah::where('id_induk_wilayah', $details->province_id)
+        ->orderBy('nm_wil', 'asc')
+        ->get();
+    }
+
+    $districts = collect();
+    if ($details && $details->city_id) {
+      $districts = \App\Models\DataWilayah::where('id_induk_wilayah', $details->city_id)
+        ->orderBy('nm_wil', 'asc')
+        ->get();
+    }
+
+    // 6. Data pendukung bawaan
+    $studyPrograms = \App\Models\StudyProgram::query()
       ->where('is_active', true)
       ->select('id', 'name', 'faculty')
       ->get();
 
-    $customFields = CustomField::query()
+    $customFields = \App\Models\CustomField::query()
       ->where('category', 'registration')
       ->orderBy('order')
       ->get();
 
+    // 7. Masukkan semua variabel ke compact
     return view('admin.pendaftar.form.show', compact(
       'user',
       'customFields',
       'studyPrograms',
-      'isLocked'
+      'isLocked',
+      'provinces',
+      'cities',
+      'districts',
+      'transportations',
+      'occupations',
+      'incomes',
+      'residenceTypes'
     ));
   }
-
 
   public function store(Request $request, $id)
   {
