@@ -13,8 +13,14 @@
                     <p class="text-xl text-slate-400 font-medium">Calon Mahasiswa Masa Depan Universitas Annuqayah!</p>
                 </div>
             </header>
+            @php
+                $user = auth()->user();
+                $isPaymentSuccess = $user->payment && $user->payment->status === 'success';
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+                $isLulus = $user->registration && $user->registration->status_kelulusan === 'lulus';
+            @endphp
+            <div
+                class="grid grid-cols-1 {{ $isPaymentSuccess && $isLulus ? 'md:grid-cols-3' : 'md:grid-cols-2' }} gap-4 mb-12">
                 <a href="/cek-pembayaran"
                     class="group flex items-center justify-between p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md hover:border-indigo-300 transition-all">
                     <div class="flex items-center gap-4">
@@ -30,6 +36,25 @@
                     <span
                         class="material-symbols-outlined text-slate-300 group-hover:text-indigo-500 transition-transform group-hover:translate-x-1">chevron_right</span>
                 </a>
+
+
+                @if ($isPaymentSuccess && $isLulus)
+                    <a href="{{ route('cert.index') }}"
+                        class="group flex items-center justify-between p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md hover:border-indigo-300 transition-all">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="flex items-center justify-center p-3 bg-indigo-50 text-indigo-600 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                <span class="material-symbols-outlined">verified</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Cetak Sertifikat Kelulusan</h3>
+                                <p class="text-sm text-slate-500">Selamat! Anda dinyatakan lulus seleksi.</p>
+                            </div>
+                        </div>
+                        <span
+                            class="material-symbols-outlined text-slate-300 group-hover:text-indigo-500 transition-transform group-hover:translate-x-1">download</span>
+                    </a>
+                @endif
 
                 <a href="/cek-verifikasi"
                     class="group flex items-center justify-between p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md hover:border-emerald-300 transition-all">

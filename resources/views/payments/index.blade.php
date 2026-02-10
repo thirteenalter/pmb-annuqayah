@@ -170,10 +170,11 @@
                     <div>
                         <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight">Butuh Bantuan?</h4>
                         <p class="text-xs text-slate-500">Chat WhatsApp Helpdesk PMB: <span
-                                class="font-bold text-indigo-600 font-mono">{{ $settings->nowa }}</span></p>
+                                class="font-bold text-indigo-600 font-mono">{{ $settings->nowa ?? 'Admin Belum Menentukan' }}</span>
+                        </p>
                     </div>
                 </div>
-                <a href="https://wa.me/{{ $settings->nowa }}" target="_blank"
+                <a href="https://wa.me/{{ $settings->nowa ?? '08' }}" target="_blank"
                     class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all group">
                     <span
                         class="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform">chevron_right</span>

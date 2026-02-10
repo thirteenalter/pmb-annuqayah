@@ -9,12 +9,7 @@ class CertificationController extends Controller
 {
   public function index()
   {
-    // kelulusan cbt, administrasi, pembayaran, da
-    $user = Auth::user();
-
-    if ($user) {
-      $user->load(['validity']);
-    }
+    $user = Auth::user()->load(['registration', 'registration.studentDetails']);
 
     return view("camaba.verifikasi.cert", compact('user'));
   }
