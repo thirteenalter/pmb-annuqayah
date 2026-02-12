@@ -13,7 +13,7 @@
         @php
             $hasDetails = $user->studentDetail()->exists();
 
-            $hasDocuments = $user->document && $user->document->ktp_scan && $user->document->ijazah_scan;
+            $hasDocuments = $user->document && $user->document->photo_formal && $user->document->ktp_scan;
 
             $hasPaid = $user->payment && $user->payment->status === 'success';
 
@@ -21,6 +21,10 @@
 
             $isReadyToVerify = $hasDetails && $hasDocuments && $hasPaid && $examFinished;
         @endphp
+
+
+
+
 
         @if ($isReadyToVerify)
             <div
@@ -115,6 +119,50 @@
             </div>
         @endif
 
+        <div
+            class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">swap_horiz</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 leading-tight">Switch Pilihan Lulus</h2>
+                    <p class="text-xs text-slate-500 font-medium italic">Tentukan prodi mana pendaftar ini akan
+                        diluluskan.</p>
+                </div>
+            </div>
+
+            {{-- Toggle Switcher --}}
+            <div class="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                <form action="{{ route('admin.switchers', $user->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" name="mode" value="choice_1"
+                        class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all 
+                {{ $user->registration->accepted_study_program_id === $user->registration->study_program_id ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
+                        PILIHAN 1
+                    </button>
+                </form>
+
+                <form action="{{ route('admin.switchers', $user->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" name="mode" value="choice_2"
+                        class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all 
+                {{ $user->registration->accepted_study_program_id === $user->registration->study_program_id_second ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
+                        PILIHAN 2
+                    </button>
+                </form>
+
+                <form action="{{ route('admin.switchers', $user->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" name="mode" value="reset"
+                        class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all 
+        {{ is_null($user->registration->accepted_study_program_id) ? 'bg-red-600 text-white shadow-lg' : 'text-slate-500 hover:bg-white' }}">
+                        KOSONGKAN
+                    </button>
+                </form>
+            </div>
+        </div>
+
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="space-y-6">
@@ -168,10 +216,19 @@
                                 class="text-sm font-bold">{{ $user->registrationPeriod?->name ?? ($user->registration?->registrationPeriod?->name ?? '-') }}</span>
                         </div>
                         <div>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold block mb-1">Prodi</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold block mb-1">Prodi Pilihan
+                                1</span>
                             <span class="text-sm font-bold text-indigo-400">
                                 {{-- Jika menggunakan relasi ke model StudyProgram --}}
                                 {{ $user->registration?->studyProgram?->name ?? ($user->registration?->study_program ?? '-') }}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold block mb-1">Prodi Pilihan
+                                2</span>
+                            <span class="text-sm font-bold text-indigo-400">
+                                {{-- Jika menggunakan relasi ke model StudyProgram --}}
+                                {{ $user->registration?->secondStudyProgram?->name ?? ($user->registration?->study_program ?? '-') }}
                             </span>
                         </div>
                         <div>
@@ -350,38 +407,42 @@
                     </div>
 
                 </div>
+                @php
+                    $user = $user ?? auth()->user();
+                    $payment = $payment ?? $user->payment;
+                    $validity = $validity ?? $user->validity;
 
+                    $selectedWave = $user->registrationPeriod;
+
+                    $isGratis = $selectedWave && $selectedWave->price == 0;
+
+                    // Logika Status
+                    $isWaiting = $payment && (!$validity || $validity->final_status === 'pending');
+                    $isSuccess = $validity && $validity->final_status === 'valid';
+                    $isRejected = $validity && $validity->final_status === 'invalid';
+                @endphp
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                         <h4 class="font-bold text-slate-900 uppercase text-[11px] tracking-widest"> Pembayaran
                         </h4>
-                        {{-- <div class="flex gap-2">
+                        @if ($isGratis)
+                            <h4 class="font-bold text-green-900 uppercase text-[11px] tracking-widest"> Gratis
+                            </h4>
+                        @endif
+                        <div class="flex gap-2">
                             <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
                                 @csrf
-                                <button name="set_payment" value="valid"
+                                <button name="set_payment" value="success"
                                     class="px-3 py-1.5 rounded-lg text-[9px] font-black transition-all {{ $user->validity?->is_payment_valid ? 'bg-emerald-600 text-white' : 'bg-white text-emerald-600 border border-emerald-200' }}">VALID</button>
                             </form>
                             <form action="{{ route('admin.pendaftar.validate', $user->id) }}" method="POST">
                                 @csrf
-                                <button name="set_payment" value="invalid"
+                                <button name="set_payment" value="failed"
                                     class="px-3 py-1.5 rounded-lg text-[9px] font-black transition-all {{ !$user->validity?->is_payment_valid && $user->validity?->verified_at ? 'bg-rose-600 text-white' : 'bg-white text-rose-600 border border-rose-200' }}">TOLAK</button>
                             </form>
-                        </div> --}}
+                        </div>
                     </div>
-                    @php
-                        $user = $user ?? auth()->user();
-                        $payment = $payment ?? $user->payment;
-                        $validity = $validity ?? $user->validity;
 
-                        $selectedWave = $user->registrationPeriod;
-
-                        $isGratis = $selectedWave && $selectedWave->price == 0;
-
-                        // Logika Status
-                        $isWaiting = $payment && (!$validity || $validity->final_status === 'pending');
-                        $isSuccess = $validity && $validity->final_status === 'valid';
-                        $isRejected = $validity && $validity->final_status === 'invalid';
-                    @endphp
                     @if (!$isGratis)
                         <div class="p-6">
                             <div
@@ -401,6 +462,7 @@
 
 
                         </div>
+
                     @endif
 
                 </div>

@@ -41,6 +41,11 @@ class Registration extends Model
     return $this->belongsTo(StudyProgram::class, 'study_program_id_second');
   }
 
+  public function acceptedStudyProgram()
+  {
+    return $this->belongsTo(StudyProgram::class, 'accepted_study_program_id');
+  }
+
   public function studentProfile()
   {
     return $this->hasOne(StudentProfile::class, 'registration_id');

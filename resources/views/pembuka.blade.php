@@ -18,10 +18,15 @@
                 $isPaymentSuccess = $user->payment && $user->payment->status === 'success';
 
                 $isLulus = $user->registration && $user->registration->status_kelulusan === 'lulus';
+                $gridClass = 'md:grid-cols-2';
 
+                if ($isPaymentSuccess && $isLulus) {
+                    $gridClass = 'md:grid-cols-2';
+                } elseif ($user->registrationPeriod->price == 0) {
+                    $gridClass = 'md:grid-cols-1';
+                }
             @endphp
-            <div
-                class="grid grid-cols-1  {{ ($isPaymentSuccess && $isLulus ? 'md:grid-cols-3' : $user->registrationPeriod->price === 0) ? 'md:grid-cols-1' : 'md:grid-cols-2' }} gap-4 mb-12">
+            <div class="grid grid-cols-1  {{ $gridClass }} gap-4 mb-12">
 
                 @if ($user->registrationPeriod->price !== 0)
                     <a href="/cek-pembayaran"

@@ -12,6 +12,29 @@ use Illuminate\Support\Facades\DB;
 
 class UserDashboard extends Controller
 {
+
+  public function switchStudyProgram(Request $request, $id)
+  {
+
+    // dd($request->all());
+    // dd($id);
+    $user = User::findOrFail($id);
+    $mode = $request->mode;
+
+    if ($mode === 'choice_1') {
+      $user->registration->accepted_study_program_id = $user->registration->study_program_id;
+    } elseif ($mode === 'choice_2') {
+      $user->registration->accepted_study_program_id = $user->registration->study_program_id_second;
+    } elseif ($mode === 'reset') {
+      $user->registration->accepted_study_program_id = null;
+    }
+
+    $user->registration->save();
+    return redirect()
+      ->route('admin.dashboard.pendaftar.show', $id)
+      ->with('success', 'Updated');
+  }
+
   public function pendaftar(Request $request)
   {
     $search = $request->input('search');
@@ -57,7 +80,7 @@ class UserDashboard extends Controller
 
     ])->findOrFail($id);
 
-    return view('admin.pendaftar.show', compact('user'));
+    return view('admin.pendaftar.show', compact('user', 'id'));
   }
 
   public function validateData(Request $request, $id)
@@ -76,11 +99,17 @@ class UserDashboard extends Controller
       // 2. Validasi Pembayaran (SINKRONKAN DI SINI)
       if ($request->has('set_payment')) {
         $status = $request->set_payment; // 'valid' atau 'invalid'
-        $validity->is_payment_valid = ($status === 'valid');
 
-        // Update juga kolom status di tabel payments
+        if ($status === "success") {
+          $validity->is_payment_valid = 1;
+        }
+        if ($status === "failed") {
+          $validity->is_payment_valid = 0;
+        }
+
         $payment->status = $status;
         $payment->save();
+        $validity->save();
       }
 
       // 3. Keputusan Kelulusan (Tabel registrations)
@@ -101,8 +130,8 @@ class UserDashboard extends Controller
           $validity->is_data_valid = true;
           $validity->is_payment_valid = true;
           $user->status = 'valid';
-          $user->save();
           $payment->status = 'success';
+          $user->save();
           $payment->save();
         }
       }

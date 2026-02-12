@@ -113,6 +113,19 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="group relative bg-slate-50 p-4 rounded-2xl border border-slate-100 cursor-pointer transition-all hover:bg-white hover:border-indigo-300 hover:shadow-sm"
+                                onclick="copyToClipboard('{{ $user->name }}', 'Nama')">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Diterima Di
+                                    Jurusan
+                                </p>
+                                <div class="flex justify-between items-center">
+                                    <h2 class="text-lg font-bold text-slate-800 uppercase">
+                                        {{ $user->registration->acceptedStudyProgram->name }}</h2>
+                                    <span
+                                        class="material-symbols-outlined text-slate-300 text-sm no-print group-hover:text-indigo-500">content_copy</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

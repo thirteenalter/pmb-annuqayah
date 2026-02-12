@@ -281,5 +281,53 @@
             const selectedOption = this.options[this.selectedIndex];
             kecHelper.value = selectedOption.getAttribute('data-id');
         });
+
+        if (provHelper.value) {
+            fetch(`/api/regions/${provHelper.value}`)
+                .then(res => res.json())
+                .then(data => {
+                    kabSelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+
+                    data.forEach(city => {
+                        kabSelect.innerHTML +=
+                            `<option value="${city.nm_wil}" data-id="${city.id_wil}">
+                        ${city.nm_wil}
+                    </option>`;
+                    });
+
+                    // SELECT YANG SUDAH DISIMPAN
+                    if (kabHelper.value) {
+                        const opt = kabSelect.querySelector(`[data-id="${kabHelper.value}"]`);
+                        if (opt) opt.selected = true;
+                    }
+                });
+        }
+
+        if (kabHelper.value) {
+            fetch(`/api/regions/${kabHelper.value}`)
+                .then(res => res.json())
+                .then(data => {
+                    kecSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+
+                    data.forEach(dist => {
+                        kecSelect.innerHTML +=
+                            `<option value="${dist.nm_wil}" data-id="${dist.id_wil}">
+                        ${dist.nm_wil}
+                    </option>`;
+                    });
+
+                    if (kecHelper.value) {
+                        const opt = kecSelect.querySelector(`[data-id="${kecHelper.value}"]`);
+                        if (opt) opt.selected = true;
+                    }
+                });
+        }
+
+        if (provHelper.value) {
+            const opt = provSelect.querySelector(`[data-id="${provHelper.value}"]`);
+            if (opt) opt.selected = true;
+        }
+
+
     });
 </script>

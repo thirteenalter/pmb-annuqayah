@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\StudentFormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ReportSummary;
+use App\Http\Controllers\UserDashboard;
 use Illuminate\Support\Facades\Artisan;
 
 
@@ -33,3 +34,8 @@ Route::resource('report', ReportSummary::class)->names('reportsum')->only(['inde
 Route::get('export/data', [ReportSummary::class, 'export'])
   ->name('reports');
 Route::get('export/master-data', [ReportSummary::class, 'exportMaster'])->name('report.master');
+
+Route::post(
+  'dashboard/list-pendaftar/pendaftar/{id}/switch-study-program',
+  [UserDashboard::class, 'switchStudyProgram']
+)->name('switchers');

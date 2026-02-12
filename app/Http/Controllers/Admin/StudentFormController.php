@@ -109,6 +109,8 @@ class StudentFormController extends Controller
         'gender'      => $request->gender ?? 'L',
       ]);
 
+      
+
       // 2. UPDATE TABEL REGISTRATIONS
       $registration = $user->registration()->updateOrCreate(['user_id' => $user->id], [
         'entry_path'         => $request->entry_path ?? 'MANDIRI',

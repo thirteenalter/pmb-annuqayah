@@ -272,6 +272,9 @@ class StudentFormController extends Controller
         // Sesuai model StudentDetails yang kamu upload:
         'kebutuhan_khusus_ayah'      => $request->kebutuhan_khusus_ayah,
         'kebutuhan_khusus_ibu'       => $request->kebutuhan_khusus_ibu,
+        'province_id'                => $request->province_id,
+        'city_id'                    => $request->city_id,
+        'district_id'                => $request->district_id,
       ]);
 
       // E. Update Student Family (Data Detail Orang Tua)

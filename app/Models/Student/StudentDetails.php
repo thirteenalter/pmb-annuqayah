@@ -2,6 +2,7 @@
 
 namespace App\Models\Student;
 
+use App\Models\DataWilayah;
 use App\Models\Registration;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,11 +34,29 @@ class StudentDetails extends Model
     'jenis_tinggal',     // Menyimpan Nama String
     'kebutuhan_khusus_mahasiswa',
     'kebutuhan_khusus_ayah',
-    'kebutuhan_khusus_ibu'
+    'kebutuhan_khusus_ibu',
+    'province_id',
+    'city_id',
+    'district_id',
   ];
 
   public function registration(): BelongsTo
   {
     return $this->belongsTo(Registration::class);
+  }
+
+  public function province()
+  {
+    return $this->belongsTo(DataWilayah::class, 'province_id', 'id_wil');
+  }
+
+  public function city()
+  {
+    return $this->belongsTo(DataWilayah::class, 'city_id', 'id_wil');
+  }
+
+  public function district()
+  {
+    return $this->belongsTo(DataWilayah::class, 'district_id', 'id_wil');
   }
 }

@@ -11,13 +11,21 @@ class StudentAdmissionReportController extends Controller
 {
   public function index(Request $request)
   {
-    $users = User::with([
+    $query = User::with([
       'identity',
       'validity',
-      'registration.studentDetails', // Gunakan nama yang ada di model Registration
+      'registration.studentDetails',
       'registration.studentFamily',
       'registration.studyProgram'
-    ])->paginate($request->get('limit', 10));
+    ]);
+
+    $limit = $request->get('limit', 10);
+
+    if ($limit === 'all') {
+      $users = $query->get();
+    } else {
+      $users = $query->paginate((int) $limit);
+    }
 
     return response()->json([
       'status'  => 'success',
